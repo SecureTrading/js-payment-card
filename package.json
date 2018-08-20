@@ -1,0 +1,52 @@
+{
+  "name": "js-payment-card",
+  "version": "1.0.0",
+  "description": "JavaScript Payment card",
+  "main": "<rootDir>/src/payment-card.js",
+  "scripts": {
+    "build": "webpack",
+    "debug": "webpack --mode=none",
+    "test": "./node_modules/.bin/eslint ./src/*.js && jest test --coverage",
+    "integration": "node ./test/integration/integration.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Secure-Trading/js-payment-card.git"
+  },
+  "author": "Secure Trading",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Secure-Trading/js-payment-card/issues"
+  },
+  "homepage": "https://github.com/Secure-Trading/js-payment-card#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.5",
+    "babel-preset-env": "^1.7.0",
+    "chalk": "^2.4.1",
+    "coveralls": "^3.0.2",
+    "css-loader": "^1.0.0",
+    "eslint": "^5.2.0",
+    "file-loader": "^1.1.11",
+    "html-loader": "^0.5.5",
+    "http-server": "^0.11.1",
+    "jest": "^23.4.1",
+    "jest-cli": "^23.5.0",
+    "jest-each": "^23.4.0",
+    "jsdom": "^11.12.0",
+    "selenium-webdriver": "^4.0.0-alpha.1",
+    "snyk": "^1.89.0",
+    "style-loader": "^0.21.0",
+    "url-loader": "^1.0.1",
+    "webpack": "^4.16.2",
+    "webpack-cli": "^3.1.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "\\.(css|less|png)$": "<rootDir>/test/__mocks__/fileMock.js",
+      "\\.(html)$": "<rootDir>/test/__mocks__/htmlMock.js"
+    }
+  }
+}

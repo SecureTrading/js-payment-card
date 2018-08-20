@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Test page</title>
+    <script src="./dist/payment-card.js"></script>
+    <style>
+      html {
+        font-family: Arial, Helvetica, sans-serif;
+      }
+      body {
+        margin: auto;
+        width: 50%;
+      }
+      label {
+        margin: 10px;
+        width: 110px;
+        display: inline-block;
+      }
+      #submit-btn {
+        margin:10px;
+        padding: 10px;
+        width: 360px;
+      }
+    </style>
+  </head>
+  <body>
+    <form id="payment-form">
+      <h1>Sample payment form</h1>
+        <div id="st-card-outer-container"></div>
+        <div>
+          <label for="nameoncard">Name on card:</label><input type="text" name="nameoncard" value="" />
+        </div>
+        <div>
+          <label for="pan">Card number:</label><input type="text" name="pan" value="" />
+        </div>
+        <div>
+          <label for="expirydate">Expiry date:</label><input type="text" name="expirydate" value="" />
+        </div>
+        <div>
+          <label for="securitycode">Security code:</label><input type="text" name="securitycode" value="" />
+        </div>
+        <div>
+          <input id="submit-btn" type="submit" value="Pay" />
+        </div>
+    </form>
+    <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", function() {
+          var config = {};
+          var card = new PaymentCard.Card(config);
+        });
+      </script>
+  </body>
+  
+</html>

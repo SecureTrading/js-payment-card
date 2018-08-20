@@ -1,0 +1,171 @@
+div#st-card-container {
+    position: relative;
+    height: 160px;
+    width: 240px;
+    font-family: Courier New, Courier, Lucida Sans Typewriter, Lucida Typewriter, monospace;
+    font-size: 16px;
+    perspective: 600px;
+    padding: 20px;
+}
+#st-card {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+.st-card-side {
+    transition: transform 1s;
+    transform-style: preserve-3d;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    background: #CCCCCC;
+    background: linear-gradient(35deg, #CCCCCC 0, #EEEEEE 100%);
+    color: #999999;
+    border: solid 2px #CCCCCC;
+    border-radius: 5px;
+}
+
+.is-flipped #st-front {
+    z-index: 1;
+    transform: rotateY(180deg);
+}
+#st-front {
+    z-index: 2;
+}
+#st-back {
+    z-index: 1;
+    transform: rotateY( -180deg );
+}
+.is-flipped #st-back {
+    transform: rotateY( 0deg );
+    z-index: 2;
+}
+
+img#st-chip-logo {
+    position: absolute;
+    left: 15px;
+    top: 25px;
+    max-width: 40px;
+}
+img#st-payment-logo {
+    position: absolute;
+    left: 173px;
+    top: 18px;
+    height: 30px;
+    padding: 2px;
+}
+
+div#st-pan-overlay {
+    position: absolute;
+    top: 90px;
+    left: 15px;
+    font-weight: lighter;
+}
+div#st-expirydate-overlay {
+    position: absolute;
+    top: 120px;
+    left: 150px;
+    font-size: 0.8em;
+}
+div#st-nameoncard-overlay {
+    position: absolute;
+    top: 120px;
+    left: 15px;
+    font-size: 0.8em;
+}
+div#st-securitycode-overlay {
+    position: absolute;
+    top: 80px;
+    left: 150px;
+    font-size: 0.7em;
+    color: #393839;
+}
+div#st-securitycode-overlay-front {
+    position: absolute;
+    top: 75px;
+    left: 200px;
+    font-size: 0.7em;
+}
+.st-hide-front-securitycode div#st-securitycode-overlay-front {
+    display: none!important;
+}
+
+div#st-track2 {
+    position: absolute;
+    height: 60px;
+    width: 95%;
+    top: 10px;
+    left: 5px;
+    background: darkgrey;
+    font-size: 0.8em;
+    border-radius: 2px;
+}
+
+div#st-signature {
+    position: absolute;
+    top: 80px;
+    height: 30px;
+    width: 75%;
+    left: 5px;
+    background: white;
+    font-size: 0.8em;
+    border-radius: 2px;
+}
+
+div.st-AMEX .st-card-side {
+    background: #0050c8;
+    background: linear-gradient(35deg, #0050c8 0, #5073f0 100%);
+    border-color: #0050c8;
+    color: #efefef;
+}
+div.st-ASTROPAYCARD .st-card-side {
+    background: #af3737;
+    background: linear-gradient(35deg, #af3737 0, #dc605a 100%);
+    border-color: #af3737;
+    color: #efefef;
+}
+div.st-DINERS .st-card-side {
+    background: #2855a0;
+    background: linear-gradient(35deg, #2855a0 0, #5779c9 100%);
+    border-color: #2855a0;
+    color: #efefef;
+}
+div.st-DISCOVER .st-card-side {
+    background: #ff6000;
+    background: linear-gradient(35deg, #ff6000 0, #ff8936 100%);
+    border-color: #ff6000;
+    color: #efefef;
+}
+div.st-JCB .st-card-side {
+    background: #0a3c82;
+    background: linear-gradient(35deg, #0a3c82 0, #3f5fab 100%);
+    border-color: #0a3c82;
+    color: #efefef;
+}
+div.st-MAESTRO .st-card-side {
+    background: #f01428;
+    background: linear-gradient(35deg, #f01428 0, #ff544b 100%);
+    border-color: #f01428;
+    color: #efefef;
+}
+div.st-MASTERCARD .st-card-side {
+    background: #eb0014;
+    background: linear-gradient(35deg, #eb0014 0, #ff4d37 100%);
+    border-color: #eb0014;
+    color: #efefef;
+}
+div.st-VISA .st-card-side {
+    background: #191e73;
+    background: linear-gradient(35deg, #191e73 0, #453d99 100%);
+    border-color: #191e73;
+    color: #efefef;
+}
+div.st-ASTROPAYCARD .st-card-side #st-payment-logo {
+    background-color: #ffffff;
+    border-radius: 1px;
+}
