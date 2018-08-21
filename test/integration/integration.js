@@ -19,6 +19,7 @@ function getCapabilities(browserName) {
 	'os' : browserName[2],
 	'os_version' : browserName[3],
 	'project': 'js-payment-card',
+	'build': process.env.TRAVIS_BUILD_NUMBER,
 	'resolution' : '1024x768',
 	'browserstack.local' : true,
 	'browserstack.localIdentifier' : process.env.BROWSERSTACK_LOCAL_IDENTIFIER,
