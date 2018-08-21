@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Secure-Trading/js-payment-card.git"
+    "url": "git+https://github.com/SecureTrading/js-payment-card.git"
   },
-  "author": "Secure Trading",
+  "author": "SecureTrading",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Secure-Trading/js-payment-card/issues"
+    "url": "https://github.com/SecureTrading/js-payment-card/issues"
   },
-  "homepage": "https://github.com/Secure-Trading/js-payment-card#readme",
+  "homepage": "https://github.com/SecureTrading/js-payment-card#readme",
   "dependencies": {},
   "devDependencies": {
     "babel-core": "^6.26.3",
