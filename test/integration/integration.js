@@ -49,9 +49,9 @@ async function runTests(testCases) {
 	    tests += 1;
 	    var testCase = testCases[i];
 	    try {
-		testCase(driver).catch(handleError);
+		await testCase(driver).catch(handleError);
 	    } finally {
-		driver.quit();
+		await driver.quit();
 	    }
 	}
     }
