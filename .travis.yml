@@ -7,12 +7,12 @@ install:
   - npm ci
 script:
   - npm test && cat ./coverage/lcov.info | coveralls
-#  - http-server ./ &
-#  - npm run integration
-#addons:
-#  browserstack:
-#    forcelocal: true
-#    username: 
-#      secure: "TODO"
-#    access_key:
-#      secure: "TODO"
+  - http-server ./ &
+  - npm run integration
+addons:
+  browserstack:
+    forcelocal: true
+    username: 
+      secure: "Ngf992mNXzG7AWpO8c78dwpNT4CAI2pqEs++Kr/6UR+LYLy2foJJKT+TpOdM2h3iFVJAKa/dIpBHkBqU4DpQr4I0KgxShLUDKmdcforv89RCKRQCMuxaYh4rQORvbpAelCBoLS9AxscJAB8w0R2F060fEMV6Z06iiK6yf+Cxzlv6ws1q9xoUpSTh83y2jK9H3f6AwknFthzyWWnEHAebB2T1AbNXoIJCGiUvkx1V1yUkwm+z2oXjmhDUPpX2KW1nBgfRJQtGsV+V6cN+gAKvtmRqysJJDwE4k3cB4sEqlh3z1J0BDSgdGaQmipP8X2UGC1Y7YgUcIXdVxHao6P396LcRr7vvRYWt13ykkC8wjj0C1Mqn+4KQIo+UswBtb9m67mfN0SoLtaakg8W2h6wTP+E15FVumX73plhgv+2sefDAT3332wHMTRz7ggm3hgBwYVc0wkcft4bGrftzeExnQZbrzHyBBN7wqvQ39M6VxJ0RJsn11YODYPlSNkGnFmn9Od5KVXF8CDoUPfLC4qUifvItBpWBpXxjsR7vTCY6fjiv7cXxbYS5uSme5EbE5w5W6hYYgq9KC3XWJInVDj9ENXsBf+StW+ag4UUI2P5hzXvf0zfbDTE2ZY7+izQBfdbroQnns5ymrZcXgjGIPjXRvX7V8b/KfPbGPDtSod09ts0="
+    access_key:
+      secure: "yVbT+TpTJjXyo4YhV3wy0bWU5pRqcVM1H1vUdAgAXK5Q1oXqE1h/3FKV/ZCuNja2Hc2A7C1lrOvNmswv5b4S0ERY58hMP4ajArNhXj/tbRnmy9eLHH6JczW6/0lxAAut7CpI9VvxiE8zkhPgzttZoPn2Wj6vxqIZ9xE9w3hTWWxChW8mLSIb/Sk8rS/eWiQtTREwUE9PPjqgZVwz2B5DQYNTnYMpXNm9+1H9Y5ykrXoEdXtNAUTntyUrYDvwv5I0uTadTchvO9acm9gepMjNGQjwGS24vCjqB3qLnMLW0nJmo9WiGjTQ8bxxRAkuWHm8xJ0yqGrGHq4iSgEHZUxjfb3ZIbYKrNm9646IOUabBTElVuigkJOLN6NxyHeycKNk3PCQwSApFppZZIzgUqtEdywVa6tUxQPWTHMfgClWUFVbVnlxcx5ig8KWg5X7jSlvtbgYvQftEOI5anjxzcH/+/FFvZrWCna4EYanj9vdikiaGzJczh53+ZZO25UtTmj6nvpfwDCeJnT3ecBHiUeWy6xuTtc9wamb3qeUASz9LYZOPI1DtN61TfSvehUBRxFVdMPkz8XOigOFzigSoJMhkCaMyivHQOWo3r1QTqVDym8HQ+7ZHqubJFF5X3sxuevVFvrq4HX0AyXGqGiO0VsrJH7hRj30Iq0QmJprwQ7XCD8="
