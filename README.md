@@ -28,7 +28,9 @@ To ensure our browser compatibility the integration tests for this project run t
   - Edge
   - Safari
 
-Tested by: ![BrowserStack](https://raw.githubusercontent.com/Secure-Trading/js-payment-card/master/browserstack-logo.png)
+Tested by:
+
+<img alt="BrowserStack" src="https://raw.githubusercontent.com/Secure-Trading/js-payment-card/master/browserstack-logo.png" width="300" />
 
 ## License
 [MIT](https://tldrlegal.com/license/mit-license)
