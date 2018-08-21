@@ -21,12 +21,12 @@ Feel free to open a PR to contribute. All code is required to have 100% test cov
 ## Browser compatibility
 To ensure our browser compatibility the integration tests for this project run through BrowserStack as part of the automated Travis CI pipeline. This will run the integration tests for the following supported browsers:
 
-* Internet Explorer 9, 10 and 11
-* Latest versions of the following:
-** Chrome
-** Firefox
-** Edge
-** Safari
+- Internet Explorer 9, 10 and 11
+- Latest versions of the following:
+  - Chrome
+  - Firefox
+  - Edge
+  - Safari
 
 Tested by: ![BrowserStack](https://raw.githubusercontent.com/Secure-Trading/js-payment-card/master/browserstack-logo.png)
 
