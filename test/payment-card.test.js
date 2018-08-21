@@ -331,24 +331,33 @@ each([["", {target: {name: "expirydate"}}, "preventDefault", 0],
 	 expect(pc.formatInput).toHaveBeenCalledTimes(expFormats);
      });
 
-each([["securitycode", "1066", "1066"],
-      ["expirydate", "1066", "10 / 66"],
-      ["expirydate", "2", "02 / "],
-      ["expirydate", "##/###", ""],
-      ["expirydate", "21066", "02 / 1066"],
-      ["expirydate", "210 / 66", "02 / 1066"],
-      ["pan", "", ""],
-      ["pan", "37", "37"],
-      ["pan", "4111111111111111", "4111 1111 1111 1111"],// most types use this format
-      ["pan", "377722222211111", "3777 222222 11111"],// amex cards have their own format (diners does this too)
-      ["pan", "111111111111111", "111111111111111"],// no recognised type: no format
+each([["securitycode", "1066", null],
+      ["expirydate", "1066", {value: "10 / 66"}],
+      ["expirydate", "2", {value: "02 / "}],
+      ["expirydate", "##/###", {value: ""}],
+      ["expirydate", "21066", {value: "02 / 1066"}],
+      ["expirydate", "210 / 66", {value: "02 / 1066"}],
+      ["pan", "", null],
+      ["pan", "37", null],
+      ["pan", "4111111111111111", {value: "4111 1111 1111 1111"}],// most types use this format
+      ["pan", "377722222211111", {value: "3777 222222 11111"}],// amex cards have their own format (diners does this too)
+      ["pan", "111111111111111", null],// no recognised type: no format
      ]).test("formatInput",
 	     (field, value, expected) => {
 		 const pc = new PaymentCard.Card({init: true});
 		 pc.updatePan = jest.fn(pc.updatePan);
-		 pc.elements[field].setAttributes({value: value});
-		 pc.formatInput(field)
-		 expect(pc.elements[field].getAttribute("value")).toBe(expected);
+		 const input = pc.elements[field];
+		 input.setAttributes({value: value});
+
+		 input.setAttributes = jest.fn();// Want's to be after we've set the value for the test but before the call to formatInput
+		 pc.formatInput(field);
+		 let called = 0;
+		 if (expected !== null) {
+		     expect(input.setAttributes).toHaveBeenCalledWith(expected);
+		     called = 1;
+		 }
+		 expect(input.setAttributes).toHaveBeenCalledTimes(called);
+		 
 		 let expUpdatePan = 0;
 		 if (field == "pan") {
 		     expUpdatePan = 1;
