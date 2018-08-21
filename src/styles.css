@@ -58,6 +58,11 @@ img#st-payment-logo {
     top: 18px;
     height: 30px;
     padding: 2px;
+    display: none;
+}
+
+div.st-detected img#st-payment-logo {
+    display: block;
 }
 
 div#st-pan-overlay {

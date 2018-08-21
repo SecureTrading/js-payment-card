@@ -248,16 +248,16 @@ each([["VISA", true],
      });
 
 each([[0, "", null, "", "st-hide-front-securitycode"],
-      [0, "4111 1111 1111 1111", "VISA", "visa-logo", "st-VISA st-hide-front-securitycode"],
-      [0, "6011", "MAESTRO", "maestro-logo", "st-MAESTRO st-hide-front-securitycode"],
+      [0, "4111 1111 1111 1111", "VISA", "visa-logo", "st-VISA st-detected st-hide-front-securitycode"],
+      [0, "6011", "MAESTRO", "maestro-logo", "st-MAESTRO st-detected st-hide-front-securitycode"],
       [4, "6011", null, "", "st-hide-front-securitycode"],
-      [0, "6011 0", "DISCOVER", "discover-logo", "st-DISCOVER st-hide-front-securitycode"],
-      [0, "41204", "VISA", "visa-logo", "st-VISA st-hide-front-securitycode"],
-      [0, "53", "MASTERCARD", "mastercard-logo", "st-MASTERCARD st-hide-front-securitycode"],
-      [0, "5100129111111111", "MASTERCARD", "mastercard-logo", "st-MASTERCARD st-hide-front-securitycode"], // this is a mastercarddebit card but we've rolled the brand up together
+      [0, "6011 0", "DISCOVER", "discover-logo", "st-DISCOVER st-detected st-hide-front-securitycode"],
+      [0, "41204", "VISA", "visa-logo", "st-VISA st-detected st-hide-front-securitycode"],
+      [0, "53", "MASTERCARD", "mastercard-logo", "st-MASTERCARD st-detected st-hide-front-securitycode"],
+      [0, "5100129111111111", "MASTERCARD", "mastercard-logo", "st-MASTERCARD st-detected st-hide-front-securitycode"], // this is a mastercarddebit card but we've rolled the brand up together
       [0, "222", null, "", "st-hide-front-securitycode"],
       [0, "888", null, "", "st-hide-front-securitycode"],
-      [0, "3456", "AMEX", "amex-logo", "st-AMEX"], // Amex doesn't flip
+      [0, "3456", "AMEX", "amex-logo", "st-AMEX st-detected"], // Amex doesn't flip
      ])
     .test('updatePan', 
      (minMatch, pan, expectedCardType, expectedLogo, expectedClass) => {
