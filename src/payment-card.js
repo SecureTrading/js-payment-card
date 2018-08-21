@@ -275,8 +275,10 @@ export class Card {
 		value = value.substring(0, 2) + " / " + value.substring(2);
 	    }
 	}
-	field.setAttributes({value: value});
-	field.element.setSelectionRange(selectStart, selectEnd);
+	if (value!==original) {
+	    field.setAttributes({value: value});
+	    field.element.setSelectionRange(selectStart, selectEnd);
+	}
     }
 
     shouldFlip() {
