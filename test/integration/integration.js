@@ -3,7 +3,11 @@ const chalk = require("chalk");
 
 var browserList = [["Chrome", "68.0", "Windows", "10"],
 		   ["Firefox", "61.0", "Windows", "10"],
+		   ["Edge", "17.0", "Windows", "10"],
+		   ["IE", "11.0", "Windows", "10"],
+		   ["IE", "10.0", "Windows", "8"],
 		   ["IE", "9.0", "Windows", "7"],
+		   ["Safari", "11.0", "OS X", "High Sierra"],
 		  ]
 
 
@@ -14,11 +18,10 @@ function getCapabilities(browserName) {
 	'browser_version' : browserName[1],
 	'os' : browserName[2],
 	'os_version' : browserName[3],
+	'project': 'js-payment-card',
 	'resolution' : '1024x768',
 	'browserstack.local' : true,
 	'browserstack.localIdentifier' : process.env.BROWSERSTACK_LOCAL_IDENTIFIER,
-	'browserstack.debug' : true, // TODO don't keep this always on
-	'browserstack.console' : "errors" // TODO consider if we want to have this on or not
     }
     return capabilities;
 }
@@ -45,7 +48,7 @@ async function runTests(testCases) {
 	    tests += 1;
 	    var testCase = testCases[i];
 	    try {
-		await testCase(driver).catch(handleError);// TODO  store the fact we have a failure and then exit with non-zero exit status
+		await testCase(driver).catch(handleError);
 	    } finally {
 		await driver.quit();
 	    }
