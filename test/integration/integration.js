@@ -43,7 +43,7 @@ let browserName = null
 async function runTests(testCases) {
     for (var browser in browserList) {
 	browserName = browserList[browser];
-	var driver = await getBrowser(browserName);
+	var driver = getBrowser(browserName); // We allow our browsers to queue on browser stack as we don't test more than 10 tests - if we did we'd have to cap the number that run asyncronously here
 	for (var i in testCases) {
 	    tests += 1;
 	    var testCase = testCases[i];
