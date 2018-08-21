@@ -184,8 +184,10 @@ export class Card {
 	const newDetails = binlookup(value);
 	const cardType = newDetails.type;
 	this.container.removeClass("st-" + this.cardDetails.type);
+	this.container.removeClass("st-detected");
 	if (value.length > this.config.minMatch && cardType !== null && this.isSupported(cardType)) {
 	    this.container.addClass("st-" + cardType);
+	    this.container.addClass("st-detected");
 	    this.logoImg.setAttributes({"src": this.logos[cardType]});
 	    this.cardDetails = newDetails;
 	}
