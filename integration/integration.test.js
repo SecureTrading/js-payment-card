@@ -5,13 +5,11 @@ var browserList = [["Chrome", "68.0", "Windows", "10"],
 		   ["Firefox", "61.0", "Windows", "10"],
 		   ["Edge", "17.0", "Windows", "10"],
 		   ["IE", "11.0", "Windows", "10"],
-		   ["IE", "10.0", "Windows", "8"],
-		   ["IE", "9.0", "Windows", "7"],
+		   //["IE", "10.0", "Windows", "8"],
+		   //["IE", "9.0", "Windows", "7"],
 		   ["Safari", "11.0", "OS X", "High Sierra"],
 		  ]
 
-
-// Input capabilities
 function getCapabilities(browserName) {
     var capabilities = {
 	'browserName' : browserName[0],
@@ -64,24 +62,48 @@ function handleError(error) {
 }
 
 function logResults() {
-    console.log(chalk.bold("*".repeat(50)));
-    console.log(chalk.magenta.bold("Total tests run: "+tests));
-    console.log(chalk.green.bold("Total successful tests: "+(tests-failures)));
-
     if (failures !== 0) {
-	console.log(chalk.red.bold("Total failed tests: "+failures));
-	console.log(chalk.bold("*"*50));
 	process.exit(1);
     }
-    console.log(chalk.bold("*".repeat(50)));
+}
+
+async function getOverlay(driver, name) {
+    return driver.findElement(wd.By.id("st-"+name+"-overlay"));
+}
+
+async function checkOverlay(driver, name, expected) {
+    var el = await getOverlay(driver, name);
+    await el.getText().then((actual) => { expect(actual).toBe(expected) });
+}
+
+async function sendKeysAndCheckOverlay(driver, name, toSend, expected) {
+    var input = await driver.findElement(wd.By.name(name));
+    await input.sendKeys(toSend);
+    var overlay = await getOverlay(driver, name);
+    await driver.wait(wd.until.elementTextIs(overlay, expected), 5000);
+    await checkOverlay(driver, name, expected);
+}
+
+async function checkClass(driver, id, expected) {
+    await driver.findElement(wd.By.id(id)).getAttribute("class").then((actual) => { expect(actual).toBe(expected) });
 }
 
 async function test1(driver) {
     await driver.get("http://127.0.0.1:8080/test.html");
     await driver.wait(wd.until.elementLocated(wd.By.id("st-card-container")), 5000);
     await driver.wait(wd.until.titleIs("Test page"), 1000);
+    await sendKeysAndCheckOverlay(driver, "nameoncard", "MRS A B CLARK", "MRS A B CLARK");
+    await checkOverlay(driver, "pan", "\u2219\u2219\u2219\u2219 \u2219\u2219\u2219\u2219 \u2219\u2219\u2219\u2219 \u2219\u2219\u2219\u2219");
+    await sendKeysAndCheckOverlay(driver, "pan", "4111111111111111", "4111 1111 1111 1111");
+    await sendKeysAndCheckOverlay(driver, "expirydate", "1222", "12 / 22");
+    await checkClass(driver, "st-card", "");
+    await sendKeysAndCheckOverlay(driver, "securitycode", "123", "123");
+    await checkClass(driver, "st-card", "is-flipped");
 }
-
-runTests([test1]).then(logResults);
+jest.setTimeout(300000);// 5 minutes
+test('integration',
+     () => {
+	 return runTests([test1]).then(logResults);
+     });
 
 

@@ -7,7 +7,8 @@
     "build": "webpack",
     "debug": "webpack --mode=none",
     "test": "./node_modules/.bin/eslint ./src/*.js && jest test --coverage",
-    "integration": "node ./test/integration/integration.js"
+    "server": "http-server ./ &",
+    "integration": "jest integration --detectOpenHandles"
   },
   "repository": {
     "type": "git",
@@ -41,12 +42,5 @@
     "url-loader": "^1.0.1",
     "webpack": "^4.16.2",
     "webpack-cli": "^3.1.0"
-  },
-  "jest": {
-    "testEnvironment": "node",
-    "moduleNameMapper": {
-      "\\.(css|less|png)$": "<rootDir>/test/__mocks__/fileMock.js",
-      "\\.(html)$": "<rootDir>/test/__mocks__/htmlMock.js"
-    }
   }
 }

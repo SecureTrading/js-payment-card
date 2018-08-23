@@ -7,7 +7,7 @@ install:
   - npm ci
 script:
   - npm test && cat ./coverage/lcov.info | coveralls
-  - http-server ./ &
+  - npm run server
   - npm run integration
 addons:
   browserstack:
