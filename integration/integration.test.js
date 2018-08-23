@@ -57,6 +57,7 @@ async function runTests(testCases) {
 
 function handleError(error) { 
     failures += 1; 
+    console.log("***************************************************************");
     console.log(chalk.red.bold("Failure in browser: "+browserName.join(" ")));
     console.log(chalk.red.bold(error));
 }
