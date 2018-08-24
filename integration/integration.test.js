@@ -78,7 +78,7 @@ async function test1(driver) {
     await sendKeysAndCheckOverlay(driver, "securitycode", "123", "123");
     await checkClass(driver, "st-card", "is-flipped");
 }
-jest.setTimeout(30000);// 30secs
+jest.setTimeout(60000);// 60secs
 each([["Chrome", "68.0", "Windows", "10"],
       ["Firefox", "61.0", "Windows", "10"],
       ["Edge", "17.0", "Windows", "10"],
