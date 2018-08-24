@@ -37,7 +37,7 @@ export class Card {
 	this.doNotFlip = ["AMEX"];
 
 	this.placeholders = { pan: "\u2219\u2219\u2219\u2219 \u2219\u2219\u2219\u2219 \u2219\u2219\u2219\u2219 \u2219\u2219\u2219\u2219",
-			      expirydate: "MM / YY",
+			      expirydate: "MM/YY",
 			      securitycode: "\u2219\u2219\u2219",
 			      frontsecuritycode: "\u2219\u2219\u2219\u2219",
 			      nameoncard: "MR J BLOGGS"
@@ -221,16 +221,17 @@ export class Card {
 	    return true;
 	}
 	input = String.fromCharCode(input);
-	if (!/^\d+$/.test(input)) {
+	const type = event.target.name;
+	const field = this.elements[type];
+	const value = field.getAttribute("value");
+	if (!(/^\d+$/.test(input) || (type === "expirydate" && input === "/" && value.length === 2))) {
 	    return event.preventDefault();
 	}
 
-	const type = event.target.name;
 	this.formatInput(type);
 
-	const field = this.elements[type];
 	const limit = this.entryLimits[type];
-	if (limit && (field.element.selectionStart === field.element.selectionEnd) && stripChars(field.getAttribute("value") + input).length > limit) {
+	if (limit && (field.element.selectionStart === field.element.selectionEnd) && stripChars(value + input).length > limit) {
 	    return event.preventDefault();
 	}
 	return true;
@@ -267,12 +268,13 @@ export class Card {
 		selectStart += 1;
 		selectEnd += 1;
 	    }
-	    if (value.length > 1) {
-		if (!inArray(original, "/")) {
-		    selectStart += 3;
-		    selectEnd += 3;
+	    const hasSlash = inArray(original, "/");
+	    if (value.length > 2 || hasSlash) {
+		if (!hasSlash) {
+		    selectStart += 1;
+		    selectEnd += 1;
 		}
-		value = value.substring(0, 2) + " / " + value.substring(2);
+		value = value.substring(0, 2) + "/" + value.substring(2);
 	    }
 	}
 	if (value!==original) {

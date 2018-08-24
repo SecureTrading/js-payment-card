@@ -30,7 +30,7 @@ test('init', // Check what we can't check in auto_init because we need to mock i
 	 expect(pc.updatePan.mock.calls.length).toBe(1);
 	 expect(pc.updateOverlay.mock.calls.length).toBe(4);
 	 expect(pc.updateOverlay.mock.calls).toMatchObject([["pan"], ["expirydate"], ["securitycode"], ["nameoncard"]]);
-	 expect(pc.elements.expirydate.getAttribute("placeholder")).toBe("MM / YY");
+	 expect(pc.elements.expirydate.getAttribute("placeholder")).toBe("MM/YY");
 	 expect(pc.setEventListeners.mock.calls.length).toBe(1);
      });
 
@@ -188,7 +188,7 @@ each([["pan", "4111", "4111", 1],
       ["expirydate", "12/22222", "12/22222", 0],
       ["expirydate", "11 ", "11 ", 0],
       ["expirydate", "1", "1", 0],
-      ["expirydate", "", "MM / YY", 0],
+      ["expirydate", "", "MM/YY", 0],
       ["expirydate", "<b>", "&lt;b&gt;", 0],
      ]
     ).test('updateOverlay', 
@@ -300,6 +300,9 @@ test('paste',
      });
 
 each([["", {target: {name: "expirydate"}}, "preventDefault", 0],
+      ["", {target: {name: "expirydate"}, which: 47}, "preventDefault", 0],// /
+      ["12", {target: {name: "expirydate"}, which: 47}, true, 1],// /
+      ["12/", {target: {name: "expirydate"}, which: 47}, "preventDefault", 0],// /
       ["", {target: {name: "securitycode"}}, "preventDefault", 0],
       ["", {target: {name: "securitycode"}, which: 8}, true, 0],// BACKSPACE
       ["", {target: {name: "securitycode"}, which: 9}, true, 0],// TAB
@@ -332,11 +335,12 @@ each([["", {target: {name: "expirydate"}}, "preventDefault", 0],
      });
 
 each([["securitycode", "1066", null],
-      ["expirydate", "1066", {value: "10 / 66"}],
-      ["expirydate", "2", {value: "02 / "}],
-      ["expirydate", "##/###", {value: ""}],
-      ["expirydate", "21066", {value: "02 / 1066"}],
-      ["expirydate", "210 / 66", {value: "02 / 1066"}],
+      ["expirydate", "1066", {value: "10/66"}],
+      ["expirydate", "2", {value: "02"}],
+      ["expirydate", "12/", null],
+      ["expirydate", "##/###", {value: "/"}],
+      ["expirydate", "21066", {value: "02/1066"}],
+      ["expirydate", "210 / 66", {value: "02/1066"}],
       ["pan", "", null],
       ["pan", "37", null],
       ["pan", "4111111111111111", {value: "4111 1111 1111 1111"}],// most types use this format

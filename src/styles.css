@@ -1,7 +1,7 @@
 div#st-card-container {
     position: relative;
     height: 160px;
-    width: 240px;
+    width: 250px;
     font-family: Courier New, Courier, Lucida Sans Typewriter, Lucida Typewriter, monospace;
     font-size: 16px;
     perspective: 600px;
@@ -54,13 +54,12 @@ img#st-chip-logo {
 }
 img#st-payment-logo {
     position: absolute;
-    left: 173px;
+    left: 183px;
     top: 18px;
     height: 30px;
     padding: 2px;
     display: none;
 }
-
 div.st-detected img#st-payment-logo {
     display: block;
 }
@@ -74,7 +73,7 @@ div#st-pan-overlay {
 div#st-expirydate-overlay {
     position: absolute;
     top: 120px;
-    left: 150px;
+    left: 165px;
     font-size: 0.8em;
 }
 div#st-nameoncard-overlay {
