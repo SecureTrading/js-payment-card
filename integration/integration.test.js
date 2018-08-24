@@ -1,21 +1,13 @@
+import each from 'jest-each';
 var wd = require("selenium-webdriver");
 const chalk = require("chalk");
 
-var browserList = [["Chrome", "68.0", "Windows", "10"],
-		   ["Firefox", "61.0", "Windows", "10"],
-		   ["Edge", "17.0", "Windows", "10"],
-		   ["IE", "11.0", "Windows", "10"],
-		   //["IE", "10.0", "Windows", "8"],
-		   //["IE", "9.0", "Windows", "7"],
-		   ["Safari", "11.0", "OS X", "High Sierra"],
-		  ]
-
-function getCapabilities(browserName) {
+function getCapabilities(browser, browserVersion, os, osVersion) {
     var capabilities = {
-	'browserName' : browserName[0],
-	'browser_version' : browserName[1],
-	'os' : browserName[2],
-	'os_version' : browserName[3],
+	'browserName' : browser,
+	'browser_version' : browserVersion,
+	'os' : os,
+	'os_version' : osVersion,
 	'project': 'js-payment-card',
 	'build': process.env.TRAVIS_BUILD_NUMBER,
 	'resolution' : '1024x768',
@@ -25,8 +17,8 @@ function getCapabilities(browserName) {
     return capabilities;
 }
 
-function getBrowser(browserName) {
-    var capabilities = getCapabilities(browserName);
+function getBrowser(browser, browserVersion, os, osVersion) {
+    var capabilities = getCapabilities(browser, browserVersion, os, osVersion);
     var url = "http://"+process.env.BROWSERSTACK_USER+":"+process.env.BROWSERSTACK_ACCESS_KEY+"@hub-cloud.browserstack.com/wd/hub";
     var driver = new wd.Builder().usingServer(url).withCapabilities(capabilities);
     if (process.env.http_proxy) {
@@ -39,33 +31,17 @@ function getBrowser(browserName) {
 let failures = 0;
 let tests = 0;
 let browserName = null
-async function runTests(testCases) {
-    for (var browser in browserList) {
-	browserName = browserList[browser];
-	console.log(browserName);
-	var driver = getBrowser(browserName); // We allow our browsers to queue on browser stack as we don't test more than 10 tests - if we did we'd have to cap the number that run asyncronously here
-	for (var i in testCases) {
-	    tests += 1;
-	    var testCase = testCases[i];
-	    try {
-		await testCase(driver).catch(handleError);
-	    } finally {
-		await driver.quit();
-	    }
+async function runTests(browser, browserVersion, os, osVersion, testCases) {
+    browserName = browser+":"+browserVersion
+    var driver = getBrowser(browser, browserVersion, os, osVersion); // We allow our browsers to queue on browser stack as we don't test more than 10 tests - if we did we'd have to cap the number that run asyncronously here
+    for (var i in testCases) {
+	tests += 1;
+	var testCase = testCases[i];
+	try {
+	    await testCase(driver);
+	} finally {
+	    await driver.quit();
 	}
-    }
-}
-
-function handleError(error) { 
-    failures += 1; 
-    console.log("***************************************************************");
-    console.log(chalk.red.bold("Failure in browser: "+browserName.join(" ")));
-    console.log(chalk.red.bold(error));
-}
-
-function logResults() {
-    if (failures !== 0) {
-	process.exit(1);
     }
 }
 
@@ -102,10 +78,17 @@ async function test1(driver) {
     await sendKeysAndCheckOverlay(driver, "securitycode", "123", "123");
     await checkClass(driver, "st-card", "is-flipped");
 }
-jest.setTimeout(300000);// 5 minutes
-test('integration',
-     () => {
-	 return runTests([test1]).then(logResults);
-     });
-
+jest.setTimeout(30000);// 30secs
+each([["Chrome", "68.0", "Windows", "10"],
+      ["Firefox", "61.0", "Windows", "10"],
+      ["Edge", "17.0", "Windows", "10"],
+      ["IE", "11.0", "Windows", "10"],
+      //["IE", "10.0", "Windows", "8"],
+      //["IE", "9.0", "Windows", "7"],
+      ["Safari", "11.0", "OS X", "High Sierra"],
+     ]
+    ).test('integration',
+	   (browser, browserVersion, os, osVersion) => {
+	       return runTests(browser, browserVersion, os, osVersion, [test1]);
+	   });
 
