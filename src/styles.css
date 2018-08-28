@@ -23,26 +23,27 @@ div#st-card-container {
     top: 0;
     left: 0;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-    background: #CCCCCC;
-    background: linear-gradient(35deg, #CCCCCC 0, #EEEEEE 100%);
-    color: #999999;
-    border: solid 2px #CCCCCC;
+    background: #ccc;
+    background: linear-gradient(35deg, #ccc 0, #eee 100%);
+    color: #999;
+    border: solid 2px #ccc;
     border-radius: 5px;
 }
 
-.is-flipped #st-front {
-    z-index: 1;
-    transform: rotateY(180deg);
-}
 #st-front {
     z-index: 2;
 }
 #st-back {
     z-index: 1;
-    transform: rotateY( -180deg );
+    transform: rotateY(-180deg);
 }
+.is-flipped #st-front {
+    z-index: 1;
+    transform: rotateY(180deg);
+}
+
 .is-flipped #st-back {
-    transform: rotateY( 0deg );
+    transform: rotateY(0deg);
     z-index: 2;
 }
 
@@ -96,7 +97,7 @@ div#st-securitycode-overlay-front {
     font-size: 0.7em;
 }
 .st-hide-front-securitycode div#st-securitycode-overlay-front {
-    display: none!important;
+    display: none !important;
 }
 
 div#st-track2 {
@@ -170,6 +171,6 @@ div.st-VISA .st-card-side {
     color: #efefef;
 }
 div.st-ASTROPAYCARD .st-card-side #st-payment-logo {
-    background-color: #ffffff;
+    background-color: #fff;
     border-radius: 1px;
 }
