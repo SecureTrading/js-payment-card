@@ -73,7 +73,7 @@ async function test1(driver) {
     await sendKeysAndCheckOverlay(driver, "nameoncard", "MRS A B CLARK", "MRS A B CLARK");
     await checkOverlay(driver, "pan", "\u2219\u2219\u2219\u2219 \u2219\u2219\u2219\u2219 \u2219\u2219\u2219\u2219 \u2219\u2219\u2219\u2219");
     await sendKeysAndCheckOverlay(driver, "pan", "4111111111111111", "4111 1111 1111 1111");
-    await sendKeysAndCheckOverlay(driver, "expirydate", "1222", "12 / 22");
+    await sendKeysAndCheckOverlay(driver, "expirydate", "1222", "12/22");
     await checkClass(driver, "st-card", "");
     await sendKeysAndCheckOverlay(driver, "securitycode", "123", "123");
     await checkClass(driver, "st-card", "is-flipped");
