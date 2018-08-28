@@ -19,7 +19,9 @@
     "url": "https://github.com/SecureTrading/js-payment-card/issues"
   },
   "homepage": "https://github.com/SecureTrading/js-payment-card#readme",
-  "dependencies": {},
+  "dependencies": {
+    "greenkeeper-lockfile": "^1.15.1"
+  },
   "devDependencies": {
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.5",
