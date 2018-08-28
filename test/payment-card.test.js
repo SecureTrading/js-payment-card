@@ -299,11 +299,12 @@ test('paste',
 	 expect(event.preventDefault).toHaveBeenCalledWith();
      });
 
-each([["", {target: {name: "expirydate"}}, "preventDefault", 0],
+each([["", null, true, 0],
+      ["", {target: {name: "expirydate"}}, true, 0],
       ["", {target: {name: "expirydate"}, which: 47}, "preventDefault", 0],// /
       ["12", {target: {name: "expirydate"}, which: 47}, true, 1],// /
       ["12/", {target: {name: "expirydate"}, which: 47}, "preventDefault", 0],// /
-      ["", {target: {name: "securitycode"}}, "preventDefault", 0],
+      ["", {target: {name: "securitycode"}}, true, 0],
       ["", {target: {name: "securitycode"}, which: 8}, true, 0],// BACKSPACE
       ["", {target: {name: "securitycode"}, which: 9}, true, 0],// TAB
       ["", {target: {name: "securitycode"}, which: 10}, true, 0],// LF
@@ -315,22 +316,26 @@ each([["", {target: {name: "expirydate"}}, "preventDefault", 0],
       ["55555555555555555555", {target: {name: "pan"}, which: 52}, "preventDefault", 1],// 2
       ["Elvis Isn't Dead", {target: {name: "nameoncard"}, which: 52}, true, 1],// we don't use restrictNumerical on the name for obvious reasons but it serves to prove that we don't restrict length based on displayLimits
      ]).test("restrictNumerical",
-     (existing, event, expected, expFormats) => {
+     (existing, e, expected, expFormats) => {
 	 const pc = new PaymentCard.Card({init: false});
 	 pc.setDomElements();
 	 pc.getMaxEntryLimits();
 	 pc.formatInput = jest.fn();
-	 pc.elements[event.target.name].setAttributes({value: existing});
-
-	 event.preventDefault = jest.fn();
-	 event.preventDefault.mockReturnValue("preventDefault");
-	 expect(pc.restrictNumerical(event)).toBe(expected);
-
-	 let expPrevent = 0
-	 if (expected == "preventDefault") {
-	     expPrevent = 1;
+	 global.event = {target: {name: "dummyGlobal"}};
+	 if (e !== null) {
+	     pc.elements[e.target.name].setAttributes({value: existing});
+	     e.preventDefault = jest.fn();
+	     e.preventDefault.mockReturnValue("preventDefault");
 	 }
-	 expect(event.preventDefault).toHaveBeenCalledTimes(expPrevent);
+	 expect(pc.restrictNumerical(e)).toBe(expected);
+
+	 if (e !== null) {
+	     let expPrevent = 0
+	     if (expected == "preventDefault") {
+		 expPrevent = 1;
+	     }
+	     expect(e.preventDefault).toHaveBeenCalledTimes(expPrevent);
+	 }
 	 expect(pc.formatInput).toHaveBeenCalledTimes(expFormats);
      });
 

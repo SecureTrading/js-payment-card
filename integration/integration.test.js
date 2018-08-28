@@ -12,7 +12,7 @@ function getCapabilities(browser, browserVersion, os, osVersion) {
 	'build': process.env.TRAVIS_BUILD_NUMBER,
 	'resolution' : '1024x768',
 	'browserstack.local' : true,
-	'browserstack.localIdentifier' : process.env.BROWSERSTACK_LOCAL_IDENTIFIER,
+	'browserstack.localIdentifier' : process.env.BROWSERSTACK_LOCAL_IDENTIFIER
     }
     return capabilities;
 }
@@ -78,13 +78,15 @@ async function test1(driver) {
     await sendKeysAndCheckOverlay(driver, "securitycode", "123", "123");
     await checkClass(driver, "st-card", "is-flipped");
 }
+
 jest.setTimeout(60000);// 60secs
+
 each([["Chrome", "68.0", "Windows", "10"],
       ["Firefox", "61.0", "Windows", "10"],
       ["Edge", "17.0", "Windows", "10"],
       ["IE", "11.0", "Windows", "10"],
-      //["IE", "10.0", "Windows", "8"],
-      //["IE", "9.0", "Windows", "7"],
+      ["IE", "10.0", "Windows", "8"],
+      ["IE", "9.0", "Windows", "7"],
       ["Safari", "11.0", "OS X", "High Sierra"],
      ]
     ).test('integration',
