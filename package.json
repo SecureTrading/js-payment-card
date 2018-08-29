@@ -6,7 +6,8 @@
   "scripts": {
     "build": "webpack",
     "debug": "webpack --mode=none",
-    "test": "./node_modules/.bin/eslint ./src/*.js && jest test --coverage --testPathIgnorePatterns='integration/'",
+    "lint": "./node_modules/.bin/eslint ./src/*.js && ./node_modules/.bin/stylelint ./src/*.css",
+    "test": "npm run lint && jest test --coverage --testPathIgnorePatterns='integration/'",
     "server": "http-server ./ &",
     "integration": "jest integration --detectOpenHandles"
   },
@@ -41,6 +42,8 @@
     "selenium-webdriver": "^4.0.0-alpha.1",
     "snyk": "^1.89.0",
     "style-loader": "^0.23.0",
+    "stylelint": "^9.5.0",
+    "stylelint-config-standard": "^18.2.0",
     "url-loader": "^1.0.1",
     "webpack": "^4.16.2",
     "webpack-cli": "^3.1.0"
