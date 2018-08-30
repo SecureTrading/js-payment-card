@@ -305,12 +305,12 @@ export class Card {
 
     focusSecurityCode() {
 	if (this.shouldFlip()) {
-	    this.cardElement.addClass("is-flipped");
+	    this.cardElement.addClass("st-is-flipped");
 	}
     }
     
     blurSecurityCode() {
-	this.cardElement.removeClass("is-flipped");
+	this.cardElement.removeClass("st-is-flipped");
     }
     
 }

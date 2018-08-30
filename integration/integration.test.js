@@ -76,7 +76,7 @@ async function test1(driver) {
     await sendKeysAndCheckOverlay(driver, "expirydate", "1222", "12/22");
     await checkClass(driver, "st-card", "");
     await sendKeysAndCheckOverlay(driver, "securitycode", "123", "123");
-    await checkClass(driver, "st-card", "is-flipped");
+    await checkClass(driver, "st-card", "st-is-flipped");
 }
 
 jest.setTimeout(60000);// 60secs

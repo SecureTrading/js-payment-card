@@ -37,12 +37,12 @@ div#st-card-container {
     z-index: 1;
     transform: rotateY(-180deg);
 }
-.is-flipped #st-front {
+.st-is-flipped #st-front {
     z-index: 1;
     transform: rotateY(180deg);
 }
 
-.is-flipped #st-back {
+.st-is-flipped #st-back {
     transform: rotateY(0deg);
     z-index: 2;
 }
