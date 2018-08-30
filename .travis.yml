@@ -10,9 +10,9 @@ before_script:
 jobs:
   include:
     - stage: "Build"
-      name: "Build distribution"
+      name: "Compile for distribution"
       script: npm run build
-    - stage: "Tests"
+    - stage: "Test"
       name: "Unit tests"
       script: npm test && cat ./coverage/lcov.info | coveralls
     - script: npm run server && npm run integration
