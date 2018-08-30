@@ -247,14 +247,39 @@ each([["VISA", true],
 	 expect(pc.isSupported(cardType)).toBe(expected);
      });
 
+
+each([["", false],
+      ["4", false],
+      ["4111 1111 1111 1111", false],
+      ["41111111111111111", false],
+      ["4111 1111 1111 11111", true],
+      ["4111 1111 1111 1111 1", true],
+      ["4111 1111 1111 1111 ", true],
+      ["55555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555 ", true],
+      ["5100 1291 1111 11111", true],
+      ["5100 1291 1111 1111", false],
+     ])
+.test('shouldCenter', 
+     (value, expected) => {
+	 const pc = new PaymentCard.Card({init: false});
+	 pc.createCard();
+	 pc.setDomElements();
+	 pc.elements.pan.setAttributes({"value": value})
+	 expect(pc.shouldCenter()).toBe(expected);
+     });
+
+
+
 each([[0, "", null, "", "st-hide-front-securitycode"],
       [0, "4111 1111 1111 1111", "VISA", "visa-logo", "st-VISA st-detected st-hide-front-securitycode"],
+      [0, "4111 1111 1111 11111", "VISA", "visa-logo", "st-VISA st-detected st-hide-front-securitycode st-card-centered"],
       [0, "6011", "MAESTRO", "maestro-logo", "st-MAESTRO st-detected st-hide-front-securitycode"],
       [4, "6011", null, "", "st-hide-front-securitycode"],
       [0, "6011 0", "DISCOVER", "discover-logo", "st-DISCOVER st-detected st-hide-front-securitycode"],
       [0, "41204", "VISA", "visa-logo", "st-VISA st-detected st-hide-front-securitycode"],
       [0, "53", "MASTERCARD", "mastercard-logo", "st-MASTERCARD st-detected st-hide-front-securitycode"],
       [0, "5100129111111111", "MASTERCARD", "mastercard-logo", "st-MASTERCARD st-detected st-hide-front-securitycode"], // this is a mastercarddebit card but we've rolled the brand up together
+      [0, "5100 1291 1111 11111", "MASTERCARD", "mastercard-logo", "st-MASTERCARD st-detected st-hide-front-securitycode st-card-centered"],
       [0, "222", null, "", "st-hide-front-securitycode"],
       [0, "888", null, "", "st-hide-front-securitycode"],
       [0, "3456", "AMEX", "amex-logo", "st-AMEX st-detected"], // Amex doesn't flip
@@ -399,7 +424,7 @@ test('focusSecurityCode',
 	 pc.cardElement.addClass = jest.fn();
 	 pc.cardElement.removeClass = jest.fn();
 	 pc.focusSecurityCode()
-	 expect(pc.cardElement.addClass.mock.calls).toMatchObject([["is-flipped"]]);
+	 expect(pc.cardElement.addClass.mock.calls).toMatchObject([["st-is-flipped"]]);
 	 expect(pc.cardElement.removeClass.mock.calls).toMatchObject([]);// Not called
      });
 
@@ -427,5 +452,5 @@ test('blurSecurityCode',
 	 pc.cardElement.removeClass = jest.fn();
 	 pc.blurSecurityCode()
 	 expect(pc.cardElement.addClass.mock.calls).toMatchObject([]);
-	 expect(pc.cardElement.removeClass.mock.calls).toMatchObject([["is-flipped"]]);
+	 expect(pc.cardElement.removeClass.mock.calls).toMatchObject([["st-is-flipped"]]);
      });

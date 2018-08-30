@@ -58,7 +58,7 @@ async function sendKeysAndCheckOverlay(driver, name, toSend, expected) {
     var input = await driver.findElement(wd.By.name(name));
     await input.sendKeys(toSend);
     var overlay = await getOverlay(driver, name);
-    await driver.wait(wd.until.elementTextIs(overlay, expected), 10000);
+    await driver.wait(wd.until.elementTextIs(overlay, expected), 20000);
     await checkOverlay(driver, name, expected);
 }
 
@@ -68,18 +68,18 @@ async function checkClass(driver, id, expected) {
 
 async function test1(driver) {
     await driver.get("http://127.0.0.1:8080/test.html");
-    await driver.wait(wd.until.elementLocated(wd.By.id("st-card-container")), 10000);
-    await driver.wait(wd.until.titleIs("Test page"), 2000);
+    await driver.wait(wd.until.elementLocated(wd.By.id("st-card-container")), 20000);
+    await driver.wait(wd.until.titleIs("Test page"), 20000);
     await sendKeysAndCheckOverlay(driver, "nameoncard", "MRS A B CLARK", "MRS A B CLARK");
     await checkOverlay(driver, "pan", "\u2219\u2219\u2219\u2219 \u2219\u2219\u2219\u2219 \u2219\u2219\u2219\u2219 \u2219\u2219\u2219\u2219");
     await sendKeysAndCheckOverlay(driver, "pan", "4111111111111111", "4111 1111 1111 1111");
     await sendKeysAndCheckOverlay(driver, "expirydate", "1222", "12/22");
     await checkClass(driver, "st-card", "");
     await sendKeysAndCheckOverlay(driver, "securitycode", "123", "123");
-    await checkClass(driver, "st-card", "is-flipped");
+    await checkClass(driver, "st-card", "st-is-flipped");
 }
 
-jest.setTimeout(60000);// 60secs
+jest.setTimeout(120000);// 120secs
 
 each([["Chrome", "68.0", "Windows", "10"],
       ["Firefox", "61.0", "Windows", "10"],
