@@ -68,19 +68,19 @@ div.st-detected img#st-payment-logo {
 div#st-pan-overlay {
     position: absolute;
     top: 90px;
-    left: 10px;
+    left: 23px;
     font-weight: lighter;
 }
 div#st-expirydate-overlay {
     position: absolute;
     top: 120px;
-    left: 160px;
+    left: 172px;
     font-size: 0.8em;
 }
 div#st-nameoncard-overlay {
     position: absolute;
     top: 120px;
-    left: 10px;
+    left: 23px;
     font-size: 0.8em;
 }
 div#st-securitycode-overlay {
@@ -96,6 +96,7 @@ div#st-securitycode-overlay-front {
     left: 200px;
     font-size: 0.7em;
 }
+
 .st-hide-front-securitycode div#st-securitycode-overlay-front {
     display: none !important;
 }
@@ -173,4 +174,10 @@ div.st-VISA .st-card-side {
 div.st-ASTROPAYCARD .st-card-side #st-payment-logo {
     background-color: #fff;
     border-radius: 1px;
+}
+
+.st-card-centered div#st-pan-overlay {
+    text-align: center;
+    left: 0;
+    width: 100%;
 }

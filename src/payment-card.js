@@ -179,6 +179,14 @@ export class Card {
 	return (cardType in this.logos && inArray(this.config.supported, cardType));
     }
 
+    shouldCenter() {
+	let value = this.elements.pan.getAttribute("value");
+    	if (value.length >= 20) {
+    	    return true;
+    	}
+    	return false;
+    }
+
     updatePan() {
 	const value = stripChars(this.elements.pan.getAttribute("value"));
 	const newDetails = binlookup(value);
@@ -202,6 +210,13 @@ export class Card {
 	else {
 	    this.container.removeClass(hideFrontClass);
 	}
+
+    	let centerClass = "st-card-centered";
+    	if (this.shouldCenter()) {
+    	    this.container.addClass(centerClass);
+    	} else {
+    	    this.container.removeClass(centerClass);
+    	}
     }
 
     keyUp(event) {

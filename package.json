@@ -21,18 +21,20 @@
     "url": "https://github.com/SecureTrading/js-payment-card/issues"
   },
   "homepage": "https://github.com/SecureTrading/js-payment-card#readme",
-  "dependencies": {
-    "greenkeeper-lockfile": "^1.15.1"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "babel-core": "^6.26.3",
+    "@babel/core": "^7.0.0",
+    "@babel/plugin-transform-modules-commonjs": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-jest": "^23.4.2",
     "babel-loader": "^8.0.0",
-    "babel-preset-env": "^1.7.0",
     "chalk": "^2.4.1",
     "coveralls": "^3.0.2",
     "css-loader": "^1.0.0",
     "eslint": "^5.2.0",
     "file-loader": "^1.1.11",
+    "greenkeeper-lockfile": "^1.15.1",
     "html-loader": "^0.5.5",
     "http-server": "^0.11.1",
     "jest": "^23.4.1",
@@ -45,7 +47,7 @@
     "stylelint": "^9.5.0",
     "stylelint-config-standard": "^18.2.0",
     "url-loader": "^1.0.1",
-    "webpack": "^4.16.2",
+    "webpack": "^4.17.1",
     "webpack-cli": "^3.1.0"
   }
 }
