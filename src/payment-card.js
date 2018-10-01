@@ -15,7 +15,7 @@ import visaLogo from "./images/VISA-S.png";
 import { cardtypedetails } from "./cardtype";
 import { HtmlElement } from "./htmlelement";
 import { inArray, stripChars } from "./utils";
-import { binlookup } from "./binlookup";
+import { BinLookup } from "./binlookup";
 
 export class Card {
     constructor(config) {
@@ -79,6 +79,7 @@ export class Card {
 	this.config.init = "init" in this.config ? this.config.init : true;
 	this.config.minMatch = "minMatch" in this.config ? this.config.minMatch : 0;
 	this.config.supported = "supported" in this.config ? this.config.supported : this.getAllCardTypes();
+	this.binLookup = new BinLookup(this.config);
     }
     
     createCard() {
@@ -181,20 +182,19 @@ export class Card {
 
     updatePan() {
 	const value = stripChars(this.elements.pan.getAttribute("value"));
-	const newDetails = binlookup(value);
+	const newDetails = this.binLookup.binLookup(value);
 	const cardType = newDetails.type;
 	this.container.removeClass("st-" + this.cardDetails.type);
 	this.container.removeClass("st-detected");
-	if (value.length > this.config.minMatch && cardType !== null && this.isSupported(cardType)) {
+	if (cardType !== null && this.isSupported(cardType)) {// TODO we've moved minMatch into binlookup, do we want to do the same with isSupported?
 	    this.container.addClass("st-" + cardType);
 	    this.container.addClass("st-detected");
 	    this.logoImg.setAttributes({"src": this.logos[cardType]});
-	    this.cardDetails = newDetails;
 	}
 	else {
 	    this.logoImg.setAttributes({"src": ""});
-	    this.cardDetails = {type: null};
 	}
+	this.cardDetails = newDetails;
 	let hideFrontClass = "st-hide-front-securitycode";
 	if (this.shouldFlip()) {
 	    this.container.addClass(hideFrontClass);
@@ -247,7 +247,7 @@ export class Card {
 	if (type == "pan") {
 	    this.updatePan();
 	    const format = this.cardDetails.format;
-	    if (format) {
+	    if (format && value.length > 0) {// TODO we now could have a cardType without having any pan, Bad JuJu when we try to format a blank string
 		value = stripChars(value);
 		let matches = value.match(new RegExp(format, "")).slice(1);
 		if (inArray(matches, undefined)) {

@@ -6,6 +6,24 @@ const binlookup = require('../src/binlookup');
 const fs = require('fs');
 const readline = require('readline');
 
+each([[{}, "", "2", cardtypedetails["2"]],
+      [{}, "", null, {type: null}],
+      [{defaultCardType: "MASTERCARD"}, "", null, cardtypedetails["2"]],
+      [{defaultCardType: "AMEX", minMatch: 3}, "34", "1", cardtypedetails["4"]],
+      [{defaultCardType: "MASTERCARD", maxMatch: 3}, "3456", null, {type: null}],
+     ]).test("binLookup",
+	     (config, number, lookupResult, expected) => {
+		 const originalLookup = binlookup._lookup;
+		 try {
+		     const inst = new binlookup.BinLookup(config);
+		     binlookup._lookup = jest.fn();
+		     binlookup._lookup.mockReturnValue(lookupResult);
+		     expect(inst.binLookup(number)).toEqual(expected);
+		 } finally {
+		     binlookup._lookup = originalLookup;
+		 }
+	     });
+
 
 each([["1801", "180", true],
       ["1901", "180", false],
