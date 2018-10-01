@@ -1,11 +1,11 @@
 div#st-card-container {
     position: relative;
     height: 160px;
-    width: 250px;
+    width: 235px;
     font-family: Courier New, Courier, Lucida Sans Typewriter, Lucida Typewriter, monospace;
     font-size: 16px;
     perspective: 600px;
-    padding: 20px;
+    padding: 8px 20px 8px 8px;
 }
 #st-card {
     width: 100%;
@@ -23,26 +23,27 @@ div#st-card-container {
     top: 0;
     left: 0;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-    background: #CCCCCC;
-    background: linear-gradient(35deg, #CCCCCC 0, #EEEEEE 100%);
-    color: #999999;
-    border: solid 2px #CCCCCC;
+    background: #ccc;
+    background: linear-gradient(35deg, #ccc 0, #eee 100%);
+    color: #999;
+    border: solid 2px #ccc;
     border-radius: 5px;
 }
 
-.is-flipped #st-front {
-    z-index: 1;
-    transform: rotateY(180deg);
-}
 #st-front {
     z-index: 2;
 }
 #st-back {
     z-index: 1;
-    transform: rotateY( -180deg );
+    transform: rotateY(-180deg);
 }
-.is-flipped #st-back {
-    transform: rotateY( 0deg );
+.st-is-flipped #st-front {
+    z-index: 1;
+    transform: rotateY(180deg);
+}
+
+.st-is-flipped #st-back {
+    transform: rotateY(0deg);
     z-index: 2;
 }
 
@@ -54,7 +55,7 @@ img#st-chip-logo {
 }
 img#st-payment-logo {
     position: absolute;
-    left: 183px;
+    left: 168px;
     top: 18px;
     height: 30px;
     padding: 2px;
@@ -67,19 +68,19 @@ div.st-detected img#st-payment-logo {
 div#st-pan-overlay {
     position: absolute;
     top: 90px;
-    left: 15px;
+    left: 23px;
     font-weight: lighter;
 }
 div#st-expirydate-overlay {
     position: absolute;
     top: 120px;
-    left: 165px;
+    left: 172px;
     font-size: 0.8em;
 }
 div#st-nameoncard-overlay {
     position: absolute;
     top: 120px;
-    left: 15px;
+    left: 23px;
     font-size: 0.8em;
 }
 div#st-securitycode-overlay {
@@ -95,8 +96,9 @@ div#st-securitycode-overlay-front {
     left: 200px;
     font-size: 0.7em;
 }
+
 .st-hide-front-securitycode div#st-securitycode-overlay-front {
-    display: none!important;
+    display: none !important;
 }
 
 div#st-track2 {
@@ -170,6 +172,12 @@ div.st-VISA .st-card-side {
     color: #efefef;
 }
 div.st-ASTROPAYCARD .st-card-side #st-payment-logo {
-    background-color: #ffffff;
+    background-color: #fff;
     border-radius: 1px;
+}
+
+.st-card-centered div#st-pan-overlay {
+    text-align: center;
+    left: 0;
+    width: 100%;
 }

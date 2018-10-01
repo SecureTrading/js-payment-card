@@ -180,6 +180,14 @@ export class Card {
 	return (cardType in this.logos && inArray(this.config.supported, cardType));
     }
 
+    shouldCenter() {
+	let value = this.elements.pan.getAttribute("value");
+    	if (value.length >= 20) {
+    	    return true;
+    	}
+    	return false;
+    }
+
     updatePan() {
 	const value = stripChars(this.elements.pan.getAttribute("value"));
 	const newDetails = this.binLookup.binLookup(value);
@@ -202,6 +210,13 @@ export class Card {
 	else {
 	    this.container.removeClass(hideFrontClass);
 	}
+
+    	let centerClass = "st-card-centered";
+    	if (this.shouldCenter()) {
+    	    this.container.addClass(centerClass);
+    	} else {
+    	    this.container.removeClass(centerClass);
+    	}
     }
 
     keyUp(event) {
@@ -211,28 +226,29 @@ export class Card {
 
     paste(event) {
 	return event.preventDefault();
-}
+    }
 
-    restrictNumerical(event) {
-	let input = event.which;
+    restrictNumerical(e) {
+	e = e || event;
+	let input = e.which;
 	if (input === 32) {
-	    return event.preventDefault();
-	} else if (event.metaKey || event.ctrlKey || input === 0 || input < 33) {// Special behaviour for control characters (as borrowed from example code)
+	    return e.preventDefault();
+	} else if (e.metaKey || e.ctrlKey || input === 0 || input === undefined || input < 33) {// Special behaviour for control characters (as borrowed from example code)
 	    return true;
-	}
+	} 
 	input = String.fromCharCode(input);
-	const type = event.target.name;
+	const type = e.target.name;
 	const field = this.elements[type];
 	const value = field.getAttribute("value");
 	if (!(/^\d+$/.test(input) || (type === "expirydate" && input === "/" && value.length === 2))) {
-	    return event.preventDefault();
+	    return e.preventDefault();
 	}
 
 	this.formatInput(type);
 
 	const limit = this.entryLimits[type];
 	if (limit && (field.element.selectionStart === field.element.selectionEnd) && stripChars(value + input).length > limit) {
-	    return event.preventDefault();
+	    return e.preventDefault();
 	}
 	return true;
     }
@@ -289,12 +305,12 @@ export class Card {
 
     focusSecurityCode() {
 	if (this.shouldFlip()) {
-	    this.cardElement.addClass("is-flipped");
+	    this.cardElement.addClass("st-is-flipped");
 	}
     }
     
     blurSecurityCode() {
-	this.cardElement.removeClass("is-flipped");
+	this.cardElement.removeClass("st-is-flipped");
     }
     
 }

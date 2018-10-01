@@ -6,8 +6,10 @@
   "scripts": {
     "build": "webpack",
     "debug": "webpack --mode=none",
-    "test": "./node_modules/.bin/eslint ./src/*.js && jest test --coverage",
-    "integration": "node ./test/integration/integration.js"
+    "lint": "./node_modules/.bin/eslint ./src/*.js && ./node_modules/.bin/stylelint ./src/*.css",
+    "test": "npm run lint && jest test --coverage --testPathIgnorePatterns='integration/'",
+    "server": "http-server ./ &",
+    "integration": "jest integration --detectOpenHandles"
   },
   "repository": {
     "type": "git",
@@ -21,14 +23,18 @@
   "homepage": "https://github.com/SecureTrading/js-payment-card#readme",
   "dependencies": {},
   "devDependencies": {
-    "babel-core": "^6.26.3",
-    "babel-loader": "^7.1.5",
-    "babel-preset-env": "^1.7.0",
+    "@babel/core": "^7.1.0",
+    "@babel/plugin-transform-modules-commonjs": "^7.1.0",
+    "@babel/preset-env": "^7.1.0",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-jest": "^23.4.2",
+    "babel-loader": "^8.0.2",
     "chalk": "^2.4.1",
     "coveralls": "^3.0.2",
     "css-loader": "^1.0.0",
     "eslint": "^5.2.0",
     "file-loader": "^1.1.11",
+    "greenkeeper-lockfile": "^1.15.1",
     "html-loader": "^0.5.5",
     "http-server": "^0.11.1",
     "jest": "^23.4.1",
@@ -36,17 +42,12 @@
     "jest-each": "^23.4.0",
     "jsdom": "^12.0.0",
     "selenium-webdriver": "^4.0.0-alpha.1",
-    "snyk": "^1.89.0",
-    "style-loader": "^0.22.1",
+    "snyk": "^1.97.1",
+    "style-loader": "^0.23.0",
+    "stylelint": "^9.5.0",
+    "stylelint-config-standard": "^18.2.0",
     "url-loader": "^1.0.1",
-    "webpack": "^4.16.2",
+    "webpack": "^4.20.2",
     "webpack-cli": "^3.1.0"
-  },
-  "jest": {
-    "testEnvironment": "node",
-    "moduleNameMapper": {
-      "\\.(css|less|png)$": "<rootDir>/test/__mocks__/fileMock.js",
-      "\\.(html)$": "<rootDir>/test/__mocks__/htmlMock.js"
-    }
   }
 }

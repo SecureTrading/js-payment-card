@@ -247,6 +247,26 @@ each([["VISA", true],
 	 expect(pc.isSupported(cardType)).toBe(expected);
      });
 
+each([["", false],
+      ["4", false],
+      ["4111 1111 1111 1111", false],
+      ["41111111111111111", false],
+      ["4111 1111 1111 11111", true],
+      ["4111 1111 1111 1111 1", true],
+      ["4111 1111 1111 1111 ", true],
+      ["55555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555 ", true],
+      ["5100 1291 1111 11111", true],
+      ["5100 1291 1111 1111", false],
+     ])
+.test('shouldCenter', 
+     (value, expected) => {
+	 const pc = new PaymentCard.Card({init: false});
+	 pc.createCard();
+	 pc.setDomElements();
+	 pc.elements.pan.setAttributes({"value": value})
+	 expect(pc.shouldCenter()).toBe(expected);
+     });
+
 each([[{}, "", null, "", "st-hide-front-securitycode"],
       [{defaultCardType: "AMEX"}, "", "AMEX", "amex-logo", "st-AMEX st-detected"],
       [{}, "4111 1111 1111 1111", "VISA", "visa-logo", "st-VISA st-detected st-hide-front-securitycode"],
@@ -279,7 +299,6 @@ each([[{}, "", null, "", "st-hide-front-securitycode"],
 	 expect(pc.container.getAttribute("class")).toBe(expectedClass);
      });
 
-
 each([[{target: {name: "expirydate"}}, "expirydate"],
       [{target: {name: "securitycode"}}, "securitycode"],
       [{target: {name: "nameoncard"}}, "nameoncard"],
@@ -302,11 +321,12 @@ test('paste',
 	 expect(event.preventDefault).toHaveBeenCalledWith();
      });
 
-each([["", {target: {name: "expirydate"}}, "preventDefault", 0],
+each([["", null, true, 0],
+      ["", {target: {name: "expirydate"}}, true, 0],
       ["", {target: {name: "expirydate"}, which: 47}, "preventDefault", 0],// /
       ["12", {target: {name: "expirydate"}, which: 47}, true, 1],// /
       ["12/", {target: {name: "expirydate"}, which: 47}, "preventDefault", 0],// /
-      ["", {target: {name: "securitycode"}}, "preventDefault", 0],
+      ["", {target: {name: "securitycode"}}, true, 0],
       ["", {target: {name: "securitycode"}, which: 8}, true, 0],// BACKSPACE
       ["", {target: {name: "securitycode"}, which: 9}, true, 0],// TAB
       ["", {target: {name: "securitycode"}, which: 10}, true, 0],// LF
@@ -318,22 +338,26 @@ each([["", {target: {name: "expirydate"}}, "preventDefault", 0],
       ["55555555555555555555", {target: {name: "pan"}, which: 52}, "preventDefault", 1],// 2
       ["Elvis Isn't Dead", {target: {name: "nameoncard"}, which: 52}, true, 1],// we don't use restrictNumerical on the name for obvious reasons but it serves to prove that we don't restrict length based on displayLimits
      ]).test("restrictNumerical",
-     (existing, event, expected, expFormats) => {
+     (existing, e, expected, expFormats) => {
 	 const pc = new PaymentCard.Card({init: false});
 	 pc.setDomElements();
 	 pc.getMaxEntryLimits();
 	 pc.formatInput = jest.fn();
-	 pc.elements[event.target.name].setAttributes({value: existing});
-
-	 event.preventDefault = jest.fn();
-	 event.preventDefault.mockReturnValue("preventDefault");
-	 expect(pc.restrictNumerical(event)).toBe(expected);
-
-	 let expPrevent = 0
-	 if (expected == "preventDefault") {
-	     expPrevent = 1;
+	 global.event = {target: {name: "dummyGlobal"}};
+	 if (e !== null) {
+	     pc.elements[e.target.name].setAttributes({value: existing});
+	     e.preventDefault = jest.fn();
+	     e.preventDefault.mockReturnValue("preventDefault");
 	 }
-	 expect(event.preventDefault).toHaveBeenCalledTimes(expPrevent);
+	 expect(pc.restrictNumerical(e)).toBe(expected);
+
+	 if (e !== null) {
+	     let expPrevent = 0
+	     if (expected == "preventDefault") {
+		 expPrevent = 1;
+	     }
+	     expect(e.preventDefault).toHaveBeenCalledTimes(expPrevent);
+	 }
 	 expect(pc.formatInput).toHaveBeenCalledTimes(expFormats);
      });
 
@@ -397,7 +421,7 @@ test('focusSecurityCode',
 	 pc.cardElement.addClass = jest.fn();
 	 pc.cardElement.removeClass = jest.fn();
 	 pc.focusSecurityCode()
-	 expect(pc.cardElement.addClass.mock.calls).toMatchObject([["is-flipped"]]);
+	 expect(pc.cardElement.addClass.mock.calls).toMatchObject([["st-is-flipped"]]);
 	 expect(pc.cardElement.removeClass.mock.calls).toMatchObject([]);// Not called
      });
 
@@ -425,5 +449,5 @@ test('blurSecurityCode',
 	 pc.cardElement.removeClass = jest.fn();
 	 pc.blurSecurityCode()
 	 expect(pc.cardElement.addClass.mock.calls).toMatchObject([]);
-	 expect(pc.cardElement.removeClass.mock.calls).toMatchObject([["is-flipped"]]);
+	 expect(pc.cardElement.removeClass.mock.calls).toMatchObject([["st-is-flipped"]]);
      });
