@@ -10,6 +10,7 @@ import jcbLogo from "./images/JCB-S.png";
 import laserLogo from "./images/LASER-S.png";
 import maestroLogo from "./images/MAESTRO-S.png";
 import mastercardLogo from "./images/MASTERCARD-S.png";
+import pibaLogo from "./images/PIBA-S.png";
 import visaLogo from "./images/VISA-S.png";
 
 import { cardtypedetails } from "./cardtype";
@@ -30,6 +31,7 @@ export class Card {
 		       LASER: laserLogo,
 		       MAESTRO: maestroLogo,
 		       MASTERCARD: mastercardLogo,
+		       PIBA: pibaLogo,
 		       VISA: visaLogo,
 	};
 	this.cardDetails = {};
@@ -192,17 +194,19 @@ export class Card {
 	const value = stripChars(this.elements.pan.getAttribute("value"));
 	const newDetails = this.binLookup.binLookup(value);
 	const cardType = newDetails.type;
-	this.container.removeClass("st-" + this.cardDetails.type);
-	this.container.removeClass("st-detected");
-	if (cardType !== null && this.isSupported(cardType)) {// TODO we've moved minMatch into binlookup, do we want to do the same with isSupported?
-	    this.container.addClass("st-" + cardType);
-	    this.container.addClass("st-detected");
-	    this.logoImg.setAttributes({"src": this.logos[cardType]});
+	if (newDetails !== this.cardDetails) {
+	    this.container.removeClass("st-" + this.cardDetails.type);
+	    this.container.removeClass("st-detected");
+	    if (cardType !== null && this.isSupported(cardType)) {// TODO we've moved minMatch into binlookup, do we want to do the same with isSupported?
+		this.container.addClass("st-" + cardType);
+		this.container.addClass("st-detected");
+		this.logoImg.setAttributes({"src": this.logos[cardType]});
+	    }
+	    else {
+		this.logoImg.setAttributes({"src": ""});
+	    }
+	    this.cardDetails = newDetails;
 	}
-	else {
-	    this.logoImg.setAttributes({"src": ""});
-	}
-	this.cardDetails = newDetails;
 	let hideFrontClass = "st-hide-front-securitycode";
 	if (this.shouldFlip()) {
 	    this.container.addClass(hideFrontClass);

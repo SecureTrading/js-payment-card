@@ -165,6 +165,12 @@ div.st-MASTERCARD .st-card-side {
     border-color: #eb0014;
     color: #efefef;
 }
+div.st-PIBA .st-card-side {
+    background: #6c3072;
+    background: linear-gradient(35deg, #6c3072 0, #511e62 100%);
+    border-color: #191e73;
+    color: #efefef;
+}
 div.st-VISA .st-card-side {
     background: #191e73;
     background: linear-gradient(35deg, #191e73 0, #453d99 100%);

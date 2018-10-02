@@ -34,8 +34,8 @@ test('init', // Check what we can't check in auto_init because we need to mock i
 	 expect(pc.setEventListeners.mock.calls.length).toBe(1);
      });
 
-each([[{}, {init: true, supported: ["AMEX", "ASTROPAYCARD", "DINERS", "DISCOVER", "JCB", "LASER", "MAESTRO", "MASTERCARD", "VISA"]}],
-      [{init: false}, {init: false, supported: ["AMEX", "ASTROPAYCARD", "DINERS", "DISCOVER", "JCB", "LASER", "MAESTRO", "MASTERCARD", "VISA"]}],
+each([[{}, {init: true, supported: ["AMEX", "ASTROPAYCARD", "DINERS", "DISCOVER", "JCB", "LASER", "MAESTRO", "MASTERCARD", "PIBA", "VISA"]}],
+      [{init: false}, {init: false, supported: ["AMEX", "ASTROPAYCARD", "DINERS", "DISCOVER", "JCB", "LASER", "MAESTRO", "MASTERCARD", "PIBA", "VISA"]}],
       [{supported: ["VISA"]}, {init: true, supported: ["VISA"]}],
       [{init: false, supported: ["VISA", "MASTERCARD"]}, {init: false, supported: ["VISA", "MASTERCARD"]}],
       [{init: true}, {init: true}],
@@ -61,7 +61,7 @@ each([["hello world", "hello world"],
 test('getAllCardTypes', 
      () => {
 	 const pc = new PaymentCard.Card({init: false});
-	 expect(pc.getAllCardTypes()).toMatchObject(["AMEX", "ASTROPAYCARD", "DINERS", "DISCOVER", "JCB", "LASER", "MAESTRO", "MASTERCARD", "VISA"]);
+	 expect(pc.getAllCardTypes()).toMatchObject(["AMEX", "ASTROPAYCARD", "DINERS", "DISCOVER", "JCB", "LASER", "MAESTRO", "MASTERCARD", "PIBA", "VISA"]);
      });
 
 each([["VISA", {type: "VISA", length: [13, 16, 19]}],
