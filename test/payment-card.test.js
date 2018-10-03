@@ -34,10 +34,10 @@ test('init', // Check what we can't check in auto_init because we need to mock i
 	 expect(pc.setEventListeners.mock.calls.length).toBe(1);
      });
 
-each([[{}, {init: true, supported: ["AMEX", "ASTROPAYCARD", "DINERS", "DISCOVER", "JCB", "LASER", "MAESTRO", "MASTERCARD", "PIBA", "VISA"]}],
-      [{init: false}, {init: false, supported: ["AMEX", "ASTROPAYCARD", "DINERS", "DISCOVER", "JCB", "LASER", "MAESTRO", "MASTERCARD", "PIBA", "VISA"]}],
-      [{supported: ["VISA"]}, {init: true, supported: ["VISA"]}],
-      [{init: false, supported: ["VISA", "MASTERCARD"]}, {init: false, supported: ["VISA", "MASTERCARD"]}],
+each([[{}, {init: true}],
+      [{init: false}, {init: false}],
+      [{supported: ["VISA"]}, {init: true}],
+      [{init: false, supported: ["VISA", "MASTERCARD"]}, {init: false}],
       [{init: true}, {init: true}],
      ])
 .test('setConfig', // Check different options get set on config correctly
@@ -57,23 +57,6 @@ each([["hello world", "hello world"],
 		 const container = document.querySelector("#st-card-outer-container");
 		 expect(container.innerHTML).toBe(expected);
 	     });
-
-test('getAllCardTypes', 
-     () => {
-	 const pc = new PaymentCard.Card({init: false});
-	 expect(pc.getAllCardTypes()).toMatchObject(["AMEX", "ASTROPAYCARD", "DINERS", "DISCOVER", "JCB", "LASER", "MAESTRO", "MASTERCARD", "PIBA", "VISA"]);
-     });
-
-each([["VISA", {type: "VISA", length: [13, 16, 19]}],
-      ["MASTERCARD", {type: "MASTERCARD", length: [16]}],
-      ["AMEX", {type: "AMEX", length: [15]}],
-     ])
-.test('getCard', 
-      (type, expected) => {
-	  const pc = new PaymentCard.Card({init: false});
-	  expect(pc.getCard(type)).toMatchObject(expected);
-	  expect(Object.keys(pc.getCard(type)).sort()).toMatchObject(["cvcLength", "format", "length", "luhn", "type"]);
-      });
 
 test('setDomElements', 
      () => {
@@ -230,22 +213,6 @@ each([["securitycode", "", "", ""],
 		 expect(pc.overlays[field].element.innerHTML).toBe(expected);
 		 expect(pc.overlays["frontsecuritycode"].element.innerHTML).toBe(fscExpected);// Just make sure this isn't changed for the pan
 	     });
-
-each([["VISA", true],
-      ["DELTA", false], // Because we treat DELTA as VISA brand
-      ["VISADEBIT", false], // Not supported (it's known as delta)
-      ["\u2219", false], // utf-8
-      ["MASTERCARD", true],
-      ["", false],
-      [undefined, false],
-      [null, false],
-      [{}, false],
-     ])
-.test('isSupported', 
-     (cardType, expected) => {
-	 const pc = new PaymentCard.Card({init: false});
-	 expect(pc.isSupported(cardType)).toBe(expected);
-     });
 
 each([["", false],
       ["4", false],

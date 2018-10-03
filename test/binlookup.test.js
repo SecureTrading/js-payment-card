@@ -1,29 +1,89 @@
-import each from 'jest-each';
-import { inArray } from '../src/utils';
-import { cardtype, cardtypedetails } from '../src/cardtype';
-const binlookup = require('../src/binlookup');
+import each from "jest-each";
+import { inArray } from "../src/utils";
+import { cardtype, cardtypedetails } from "../src/cardtype";
+const binlookup = require("../src/binlookup");
 
-const fs = require('fs');
-const readline = require('readline');
+const fs = require("fs");
+const readline = require("readline");
+
+const nullType = {type: null}
+
+each([[{}, {default: null, minMatch: 0, maxMatch: 6, supported: ["AMEX", "ASTROPAYCARD", "DINERS", "DISCOVER", "JCB", "LASER", "MAESTRO", "MASTERCARD", "PIBA", "VISA"]}],
+      [{supported: ["DELTA"]}, "unsupported cardType DELTA"],
+      [{minMatch: 3, maxMatch: 20, supported: ["VISA"]}, {default: null, minMatch: 3, maxMatch: 20, supported: ["VISA"]}],
+      [{defaultCardType: "AMEX", supported: ["AMEX", "MASTERCARD"]}, {default: cardtypedetails["4"], supported: ["AMEX", "MASTERCARD"]}],
+      [{defaultCardType: "AMEX", supported: ["VISA", "MASTERCARD"]}, {default: null, supported: ["VISA", "MASTERCARD"]}],
+     ])// TODO cases for other config options (min/max/default)
+.test("constructor", // Check different options get set on config correctly
+     (testConfig, expected) => {
+	 if (expected instanceof Object) {
+	     const bl = new binlookup.BinLookup(testConfig);
+	     expect(bl).toMatchObject(expected);
+	 } else {
+	     expect(() => {new binlookup.BinLookup(testConfig)}).toThrow(expected);
+	 }
+     });
+
+test("getAllCardTypes",
+     () => {
+	 const bl = new binlookup.BinLookup();
+	 expect(bl.getAllCardTypes()).toMatchObject(["AMEX", "ASTROPAYCARD", "DINERS", "DISCOVER", "JCB", "LASER", "MAESTRO", "MASTERCARD", "PIBA", "VISA"]);
+     });
+
+each([["VISA", true],
+      ["DELTA", false], // Because we treat DELTA as VISA brand
+      ["VISADEBIT", false], // Not supported (it"s known as delta)
+      ["\u2219", false], // utf-8
+      ["MASTERCARD", true],
+      [{type: "MASTERCARD"}, true],// we can pass the whole cardType object too
+      ["", false],
+      [undefined, false],
+      [null, false],
+      [{}, false],
+     ])
+.test("isSupported",
+     (cardType, expected) => {
+	 const bl = new binlookup.BinLookup();
+	 expect(bl.isSupported(cardType)).toBe(expected);
+     });
+
+each([["VISA", {type: "VISA", length: [13, 16, 19]}],
+      ["MASTERCARD", {type: "MASTERCARD", length: [16]}],
+      ["AMEX", {type: "AMEX", length: [15]}],
+     ])
+.test("getCard",
+      (type, expected) => {
+	  const bl = new binlookup.BinLookup();
+	  expect(bl.getCard(type)).toMatchObject(expected);
+	  expect(Object.keys(bl.getCard(type)).sort()).toMatchObject(["cvcLength", "format", "length", "luhn", "type"]);
+      });
 
 each([[{}, "", "2", cardtypedetails["2"]],
-      [{}, "", null, {type: null}],
+      [{}, "", null, nullType],
+      [{supported: ["AMEX"]}, "", "2", nullType],
       [{defaultCardType: "MASTERCARD"}, "", null, cardtypedetails["2"]],
       [{defaultCardType: "AMEX", minMatch: 3}, "34", "1", cardtypedetails["4"]],
-      [{defaultCardType: "MASTERCARD", maxMatch: 3}, "3456", null, {type: null}],
-     ]).test("binLookup",
+      [{defaultCardType: "AMEX", supported: ["AMEX"]}, "", "1", cardtypedetails["4"]],
+      [{defaultCardType: "MASTERCARD", maxMatch: 3}, "3456", null, nullType],
+     ]).test("binLookup_withDefaults",
 	     (config, number, lookupResult, expected) => {
-		 const originalLookup = binlookup._lookup;
-		 try {
-		     const inst = new binlookup.BinLookup(config);
-		     binlookup._lookup = jest.fn();
-		     binlookup._lookup.mockReturnValue(lookupResult);
-		     expect(inst.binLookup(number)).toEqual(expected);
-		 } finally {
-		     binlookup._lookup = originalLookup;
-		 }
+		 const bl = new binlookup.BinLookup(config);
+		 bl._lookup = jest.fn();
+		 bl._lookup.mockReturnValue(lookupResult);
+		 expect(bl.binLookup(number)).toEqual(expected);
 	     });
 
+test("binlookup_allMappings", () => {
+    const bl = new binlookup.BinLookup();
+    const mappings = Object.assign({198: nullType, null: nullType}, cardtypedetails);
+    for (let result in mappings) {
+	bl._lookup = jest.fn();
+	bl._lookup.mockReturnValue(result);
+	expect(bl.binLookup("01234")).toEqual(mappings[result]);
+	expect(bl._lookup).toHaveBeenCalledTimes(1);
+	expect(bl._lookup).toHaveBeenCalledWith("01234", cardtype);
+    }
+});
 
 each([["1801", "180", true],
       ["1901", "180", false],
@@ -33,24 +93,9 @@ each([["1801", "180", true],
       ["3096", "3088-3094", false],
      ]).test("matchKey",
 	     (number, key, expected) => {
-		 expect(binlookup.matchKey(number, key)).toBe(expected);
+		 const bl = new binlookup.BinLookup()
+		 expect(bl.matchKey(number, key)).toBe(expected);
 	     });
-
-test("binlookup", () => {
-    const originalLookup = binlookup._lookup;
-    try {
-	const mappings = Object.assign({198: {type: null}, null: {type: null}}, cardtypedetails);
-	for (let result in mappings) {
-	    binlookup._lookup = jest.fn();
-	    binlookup._lookup.mockReturnValue(result);
-	    expect(binlookup.binlookup("01234")).toEqual(mappings[result]);
-	    expect(binlookup._lookup).toHaveBeenCalledTimes(1);
-	    expect(binlookup._lookup).toHaveBeenCalledWith("01234", cardtype);
-	}
-    } finally {
-	binlookup._lookup = originalLookup;
-    }
-});
 
 each([["notfound", {}, null, 1],
       ["notfound", {"D": 7}, 7, 1],
@@ -64,15 +109,8 @@ each([["notfound", {}, null, 1],
       ["60110", {"5-6": {"56-69": 7}, "6": {"64-65": {"644-659": 8}, "60": {"6011": {"60110": 8, "60112-60114": 8, "60118-60119": {"601186-601199": 8}, "60117": {"601177-601179": 8, "601174": 8}}, "6012": {"601281": 6}}, "62": {"622": {"622126-622925": 8}, "628": {"6282-6288": 8}, "624-626": 8}, "63": {"630": {"63048": {"630487": 9, "630485": 9}, "63049": {"630493-630494": 9, "630498": 9}}}, "64": {"644-649": 8}, "65": 8, "67": {"675": {"6759": {"D": 7}}}}}, 8, 5],
      ]).test("_lookup",
 	     (number, tree, expected, depth) => {
-		 const originalLookup = binlookup._lookup;
-		 try {
-		     if (expected) {
-			 
-		     }
-		     binlookup._lookup = jest.fn(originalLookup); // mock the function as itself (so that we can spy how deep it has recursed)
-		     expect(binlookup._lookup(number, tree)).toBe(expected);
-		     expect(binlookup._lookup).toHaveBeenCalledTimes(depth);
-		 } finally {
-		     binlookup._lookup = originalLookup;
-		 }
+		 const bl = new binlookup.BinLookup()
+		 bl._lookup = jest.fn(bl._lookup); // mock the function as itself (so that we can spy how deep it has recursed)
+		 expect(bl._lookup(number, tree)).toBe(expected);
+		 expect(bl._lookup).toHaveBeenCalledTimes(depth);
 	     });

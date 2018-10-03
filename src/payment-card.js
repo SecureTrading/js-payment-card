@@ -13,7 +13,6 @@ import mastercardLogo from "./images/MASTERCARD-S.png";
 import pibaLogo from "./images/PIBA-S.png";
 import visaLogo from "./images/VISA-S.png";
 
-import { cardtypedetails } from "./cardtype";
 import { HtmlElement } from "./htmlelement";
 import { inArray, stripChars } from "./utils";
 import { BinLookup } from "./binlookup";
@@ -79,7 +78,6 @@ export class Card {
 
     setConfig() {
 	this.config.init = "init" in this.config ? this.config.init : true;
-	this.config.supported = "supported" in this.config ? this.config.supported : this.getAllCardTypes();
 	this.binLookup = new BinLookup(this.config);
 	if ("onChangeCardType" in this.config) {
 	    this.onChangeCardType = this.config.onChangeCardType.bind(this);
@@ -91,25 +89,6 @@ export class Card {
 	this.container.setHtml(this.template, false);
     }
 
-    getAllCardTypes() {
-	const result = [];
-	for (let i in cardtypedetails) {
-	    result.push(cardtypedetails[i].type);
-	}
-	return result.sort();
-    }
-
-    getCard(type) {
-	let result = undefined;
-	for (let i in cardtypedetails) {
-	    const card = cardtypedetails[i];
-	    if (card["type"] === type) {
-		result = card;
-	    }
-	}
-	return result;
-    }
-    
     setDomElements() {
 	this.elements = {pan: HtmlElement.bySelector("input[name=pan]"),
 			 expirydate: HtmlElement.bySelector("input[name=expirydate]"),
@@ -131,12 +110,9 @@ export class Card {
     getMaxEntryLimits() {
 	const panLimits = [];
 	const cvcLimits = [];
-	this.getAllCardTypes().forEach((type) => {
-	    const card = this.getCard(type);
-	    if (this.isSupported(type)) {
+	this.binLookup.forEachBreakCardTypes((card) => {
 		panLimits.push(...card["length"]);
 		cvcLimits.push(...card["cvcLength"]);
-	    }
 	});
 	this.entryLimits.pan = Math.max(...panLimits);
 	this.entryLimits.securitycode = Math.max(...cvcLimits);
@@ -180,10 +156,6 @@ export class Card {
 	}
     }
 
-    isSupported(cardType) {
-	return (cardType in this.logos && inArray(this.config.supported, cardType));
-    }
-
     shouldCenter() {
 	let value = this.elements.pan.getAttribute("value");
     	if (value.length >= 20) {
@@ -200,7 +172,7 @@ export class Card {
 	if (newDetails !== this.cardDetails) {
 	    this.container.removeClass("st-" + this.cardDetails.type);
 	    this.container.removeClass("st-detected");
-	    if (cardType !== null && this.isSupported(cardType)) {// TODO we've moved minMatch into binlookup, do we want to do the same with isSupported?
+	    if (cardType !== null && cardType in this.logos) {
 		this.container.addClass("st-" + cardType);
 		this.container.addClass("st-detected");
 		this.logoImg.setAttributes({"src": this.logos[cardType]});
