@@ -79,9 +79,11 @@ export class Card {
 
     setConfig() {
 	this.config.init = "init" in this.config ? this.config.init : true;
-	this.config.minMatch = "minMatch" in this.config ? this.config.minMatch : 0;
 	this.config.supported = "supported" in this.config ? this.config.supported : this.getAllCardTypes();
 	this.binLookup = new BinLookup(this.config);
+	if ("onChangeCardType" in this.config) {
+	    this.onChangeCardType = this.config.onChangeCardType.bind(this);
+	}
     }
     
     createCard() {
@@ -190,6 +192,7 @@ export class Card {
     	return false;
     }
 
+    onChangeCardType() {}
     updatePan() {
 	const value = stripChars(this.elements.pan.getAttribute("value"));
 	const newDetails = this.binLookup.binLookup(value);
@@ -205,22 +208,24 @@ export class Card {
 	    else {
 		this.logoImg.setAttributes({"src": ""});
 	    }
+	    const oldDetails = this.cardDetails;
 	    this.cardDetails = newDetails;
-	}
-	let hideFrontClass = "st-hide-front-securitycode";
-	if (this.shouldFlip()) {
-	    this.container.addClass(hideFrontClass);
-	}
-	else {
-	    this.container.removeClass(hideFrontClass);
-	}
+	    let hideFrontClass = "st-hide-front-securitycode";
+	    if (this.shouldFlip()) {
+		this.container.addClass(hideFrontClass);
+	    }
+	    else {
+		this.container.removeClass(hideFrontClass);
+	    }
 
-    	let centerClass = "st-card-centered";
-    	if (this.shouldCenter()) {
-    	    this.container.addClass(centerClass);
-    	} else {
-    	    this.container.removeClass(centerClass);
-    	}
+	    let centerClass = "st-card-centered";
+	    if (this.shouldCenter()) {
+		this.container.addClass(centerClass);
+	    } else {
+		this.container.removeClass(centerClass);
+	    }
+	    this.onChangeCardType(newDetails, oldDetails);
+	}
     }
 
     keyUp(event) {

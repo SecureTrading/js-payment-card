@@ -283,7 +283,7 @@ each([[{}, "", null, "", "st-hide-front-securitycode"],
      ])
     .test('updatePan', 
      (config, pan, expectedCardType, expectedLogo, expectedClass) => {
-	 config = Object.assign({init: false}, config)
+	 config = Object.assign({init: false, onChangeCardType: jest.fn()}, config)
 	 const pc = new PaymentCard.Card(config);
 	 pc.template = realTemplate;
 	 pc.createCard();
@@ -297,6 +297,7 @@ each([[{}, "", null, "", "st-hide-front-securitycode"],
 	 expect(pc.cardDetails.type).toBe(expectedCardType);
 	 expect(pc.logoImg.getAttribute("src")).toBe(expectedLogo);
 	 expect(pc.container.getAttribute("class")).toBe(expectedClass);
+	 expect(config.onChangeCardType).toHaveBeenCalledTimes(1);
      });
 
 each([[{target: {name: "expirydate"}}, "expirydate"],
