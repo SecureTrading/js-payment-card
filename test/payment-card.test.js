@@ -2,11 +2,19 @@ const jsdom = require("jsdom");
 import each from 'jest-each';
 const { JSDOM } = jsdom;
 const defaultHtml = `<!DOCTYPE html><body><p>Hello world</p><div id="st-card-outer-container"></div><form><input name="pan" /><input name="expirydate" /><input name="securitycode" /><input name="nameoncard" /></form></body></html>`;
-const { document } = (new JSDOM(defaultHtml)).window;
+const { document, CustomEvent} = (new JSDOM(defaultHtml)).window;
 global.document = document;
+global.CustomEvent = CustomEvent;
+global.EventTarget = class {
+    constructor() {
+	this.dispatchEvent = jest.fn();
+	this.addEventListener = jest.fn();
+    }
+}; // TODO a horrible shim because we can't make jsdom's EventTarget behave properly
 const PaymentCard = require('../src/payment-card');
 const fs = require("fs");
 const realTemplate = fs.readFileSync(__dirname + '/../src/template.html', 'utf8');
+
 
 test('auto_init', // Checks we automatically call init
      () => {
@@ -34,16 +42,22 @@ test('init', // Check what we can't check in auto_init because we need to mock i
 	 expect(pc.setEventListeners.mock.calls.length).toBe(1);
      });
 
-each([[{}, {init: true}],
-      [{init: false}, {init: false}],
-      [{supported: ["VISA"]}, {init: true}],
-      [{init: false, supported: ["VISA", "MASTERCARD"]}, {init: false}],
-      [{init: true}, {init: true}],
+each([[{}, {init: true}, []],
+      [{init: false}, {init: false}, []],
+      [{supported: ["VISA"]}, {init: true}, []],
+      [{init: false, supported: ["VISA", "MASTERCARD"]}, {init: false}, []],
+      [{init: true}, {init: true}, []],
+      [{init: false, listeners: {"changeCardType": "callback"}}, {init: false}, [["changeCardType", "callback"]]],
+      [{init: false, listeners: {}}, {init: false}, []],
      ])
 .test('setConfig', // Check different options get set on config correctly
-     (testConfig, expected) => {
+     (testConfig, expected, listeners) => {
 	 const pc = new PaymentCard.Card(testConfig);
 	 expect(pc.config).toMatchObject(expected);
+	 expect(pc.addEventListener).toHaveBeenCalledTimes(listeners.length);
+	 for (let i in listeners) {
+	     expect(pc.addEventListener).toHaveBeenNthCalledWith(1+parseInt(i), ...listeners[i]);
+	 }
      });
 
 each([["hello world", "hello world"],
@@ -252,6 +266,7 @@ each([[{}, "", null, "", "st-hide-front-securitycode"],
      (config, pan, expectedCardType, expectedLogo, expectedClass) => {
 	 config = Object.assign({init: false, onChangeCardType: jest.fn()}, config)
 	 const pc = new PaymentCard.Card(config);
+	 pc.dispatchEvent = jest.fn();
 	 pc.template = realTemplate;
 	 pc.createCard();
 	 pc.setDomElements();
@@ -264,7 +279,12 @@ each([[{}, "", null, "", "st-hide-front-securitycode"],
 	 expect(pc.cardDetails.type).toBe(expectedCardType);
 	 expect(pc.logoImg.getAttribute("src")).toBe(expectedLogo);
 	 expect(pc.container.getAttribute("class")).toBe(expectedClass);
-	 expect(config.onChangeCardType).toHaveBeenCalledTimes(1);
+	 expect(pc.dispatchEvent).toHaveBeenCalledTimes(1);
+	 const expEvent = new CustomEvent("changeCardType", {});
+	 expEvent.cardType = {old: {type: "oldcardtype"},
+			      new: pc.binLookup.getCard(expectedCardType) || {type: null},
+			      }
+	 expect(pc.dispatchEvent).toHaveBeenCalledWith(expEvent);
      });
 
 each([[{target: {name: "expirydate"}}, "expirydate"],

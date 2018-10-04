@@ -17,8 +17,9 @@ import { HtmlElement } from "./htmlelement";
 import { inArray, stripChars } from "./utils";
 import { BinLookup } from "./binlookup";
 
-export class Card {
+export class Card extends EventTarget {
     constructor(config) {
+	super();
 	this.config = config;
 	this.template = template;
 	
@@ -79,8 +80,11 @@ export class Card {
     setConfig() {
 	this.config.init = "init" in this.config ? this.config.init : true;
 	this.binLookup = new BinLookup(this.config);
-	if ("onChangeCardType" in this.config) {
-	    this.onChangeCardType = this.config.onChangeCardType.bind(this);
+	if ("listeners" in this.config) {
+	    const listeners = this.config.listeners;
+	    for (let eventType in listeners) {
+		this.addEventListener(eventType, listeners[eventType]);
+	    }
 	}
     }
     
@@ -164,7 +168,6 @@ export class Card {
     	return false;
     }
 
-    onChangeCardType() {}
     updatePan() {
 	const value = stripChars(this.elements.pan.getAttribute("value"));
 	const newDetails = this.binLookup.binLookup(value);
@@ -196,7 +199,11 @@ export class Card {
 	    } else {
 		this.container.removeClass(centerClass);
 	    }
-	    this.onChangeCardType(newDetails, oldDetails);
+	    const changeEvent = new CustomEvent("changeCardType");// TODO if we're moving towards an event driven approach then maybe we ought to have an "events" module and give them a rigid definition
+	    changeEvent.cardType = {new: newDetails,
+				    old: oldDetails,
+				    };
+	    this.dispatchEvent(changeEvent);
 	}
     }
 
@@ -244,7 +251,7 @@ export class Card {
 	if (type == "pan") {
 	    this.updatePan();
 	    const format = this.cardDetails.format;
-	    if (format && value.length > 0) {// TODO we now could have a cardType without having any pan, Bad JuJu when we try to format a blank string
+	    if (format && value.length > 0) {// Don't bother formatting the pan if we have a blank string
 		value = stripChars(value);
 		let matches = value.match(new RegExp(format, "")).slice(1);
 		if (inArray(matches, undefined)) {

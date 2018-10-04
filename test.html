@@ -61,18 +61,16 @@
     <script type="text/javascript">
         document.addEventListener("DOMContentLoaded", function() {
           var config = {defaultCardType: "VISA",
-			onChangeCardType: function(cardDetails) {
-				let label = document.querySelector; // HtmlElement.bySelector("label[for=securitycode]");
-				console.log(cardDetails);
-				console.log(this.elements["securitycode"]);
-				if (cardDetails.cvcLength[0] == 0) {// TODO refactor this and the shouldFlip, shouldCenter out of updatePan then unittest accordingly
-				    this.elements["securitycode"].setAttributes({"disabled": "disabled"});
-				    this.elements["securitycode"].element.parentElement.style = "display: none;";
-				} else {
-				    this.elements["securitycode"].removeAttribute("disabled");
-				    this.elements["securitycode"].element.parentElement.style = "";
-				}
-			    },
+			listeners: {changeCardType: function(event) {
+					if (event.cardType.new.cvcLength[0] == 0) {// TODO refactor this and the shouldFlip, shouldCenter out of updatePan then unittest accordingly
+					    this.elements["securitycode"].setAttributes({"disabled": "disabled"});
+					    this.elements["securitycode"].element.parentElement.style = "display: none;";
+					} else {
+					    this.elements["securitycode"].removeAttribute("disabled");
+					    this.elements["securitycode"].element.parentElement.style = "";
+					}
+				    },
+				},
 	  		};
           var card = new PaymentCard.Card(config);
         });
