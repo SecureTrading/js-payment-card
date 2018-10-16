@@ -52,7 +52,10 @@ each([[{}, {init: true}, []],
      ])
 .test('setConfig', // Check different options get set on config correctly
      (testConfig, expected, listeners) => {
-	 const pc = new PaymentCard.Card(testConfig);
+	 const pc = new PaymentCard.Card({init: false});
+	 pc.config = testConfig;
+	 pc.addEventListener = jest.fn();
+	 pc.setConfig();
 	 expect(pc.config).toMatchObject(expected);
 	 expect(pc.addEventListener).toHaveBeenCalledTimes(listeners.length);
 	 for (let i in listeners) {
