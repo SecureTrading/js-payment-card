@@ -13,7 +13,7 @@ each([[{}, {default: null, minMatch: 0, maxMatch: 6, supported: ["AMEX", "ASTROP
       [{minMatch: 3, maxMatch: 20, supported: ["VISA"]}, {default: null, minMatch: 3, maxMatch: 20, supported: ["VISA"]}],
       [{defaultCardType: "AMEX", supported: ["AMEX", "MASTERCARD"]}, {default: cardtypedetails["4"], supported: ["AMEX", "MASTERCARD"]}],
       [{defaultCardType: "AMEX", supported: ["VISA", "MASTERCARD"]}, {default: null, supported: ["VISA", "MASTERCARD"]}],
-     ])// TODO cases for other config options (min/max/default)
+     ])
 .test("constructor", // Check different options get set on config correctly
      (testConfig, expected) => {
 	 if (expected instanceof Object) {

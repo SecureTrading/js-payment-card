@@ -199,7 +199,8 @@ export class Card extends EventTarget {
 	    } else {
 		this.container.removeClass(centerClass);
 	    }
-	    const changeEvent = new CustomEvent("changeCardType");// TODO if we're moving towards an event driven approach then maybe we ought to have an "events" module and give them a rigid definition
+	    // TODO2 long term we want an "events" module with ES6 inherited CustomEvents so that this dispatch can become: this.dispatchEvent(new ChangeCardEvent(newDetails, oldDetails))
+	    const changeEvent = new CustomEvent("changeCardType");
 	    changeEvent.cardType = {new: newDetails,
 				    old: oldDetails,
 				    };

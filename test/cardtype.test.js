@@ -1,4 +1,4 @@
-global.EventTarget = class {}; // TODO a horrible shim because we can't make jsdom's EventTarget behave properly
+global.EventTarget = class {}; // This is a shim for EventTarget because the one in JSDOM doesn't behave as expected
 import { cardtypedetails } from "../src/cardtype";
 const PaymentCard = require("../src/payment-card");
 

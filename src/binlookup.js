@@ -93,15 +93,6 @@ export class BinLookup {
 	found.sort((a, b) => {
 	    return a.length - b.length;
 	});
-	// let result = null;
-	// found.some((key) => {
-	//     result = this._lookup(number, tree[key]);
-	//     return result;
-	// });
-	// if (!result && typeof tree.D !== "undefined") {
-	//     result = tree.D;
-	// }
-	// return result;
 	return forEachBreak(found, (key) => {
 		return this._lookup(number, tree[key]);
 	}) || tree.D || null;

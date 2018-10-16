@@ -10,7 +10,7 @@ global.EventTarget = class {
 	this.dispatchEvent = jest.fn();
 	this.addEventListener = jest.fn();
     }
-}; // TODO a horrible shim because we can't make jsdom's EventTarget behave properly
+}; // This is a shim for EventTarget because the one in JSDOM doesn't behave as expected
 const PaymentCard = require('../src/payment-card');
 const fs = require("fs");
 const realTemplate = fs.readFileSync(__dirname + '/../src/template.html', 'utf8');
