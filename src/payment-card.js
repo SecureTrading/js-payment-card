@@ -14,6 +14,7 @@ import pibaLogo from "./images/PIBA-S.png";
 import visaLogo from "./images/VISA-S.png";
 
 import { EventTarget } from "./eventtarget";
+import { ChangeCardTypeEvent } from "./events";
 import { HtmlElement } from "./htmlelement";
 import { inArray, stripChars } from "./utils";
 import { BinLookup } from "./binlookup";
@@ -200,12 +201,7 @@ export class Card extends EventTarget {
 	    } else {
 		this.container.removeClass(centerClass);
 	    }
-	    // TODO2 long term we want an "events" module with ES6 inherited CustomEvents so that this dispatch can become: this.dispatchEvent(new ChangeCardEvent(newDetails, oldDetails))
-	    const changeEvent = new CustomEvent("changeCardType");
-	    changeEvent.cardType = {new: newDetails,
-				    old: oldDetails,
-				    };
-	    this.dispatchEvent(changeEvent);
+	    this.dispatchEvent(new ChangeCardTypeEvent(newDetails, oldDetails));
 	}
     }
 
