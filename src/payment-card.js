@@ -13,7 +13,7 @@ import mastercardLogo from "./images/MASTERCARD-S.png";
 import pibaLogo from "./images/PIBA-S.png";
 import visaLogo from "./images/VISA-S.png";
 
-import { EventTarget } from "event-target-shim";
+import { EventTarget } from "./eventtarget";
 import { HtmlElement } from "./htmlelement";
 import { inArray, stripChars } from "./utils";
 import { BinLookup } from "./binlookup";
