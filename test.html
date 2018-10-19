@@ -22,6 +22,20 @@
         padding: 10px;
         width: 360px;
       }
+      input{
+        border: 1px solid #eee;
+	border-radius: 5px;
+	padding: 3px;
+	box-sizing: border-box;
+      }
+      input:focus {
+        border-color: #6bf;
+      }
+      input:disabled {
+        border-color: #bbb;
+        background: #eee;
+	color: #bbb;
+      }
     </style>
   </head>
   <body>
@@ -38,7 +52,7 @@
           <label for="expirydate">Expiry date:</label><input type="text" name="expirydate" value="" />
         </div>
         <div>
-          <label for="securitycode">Security code:</label><input type="text" name="securitycode" value="" />
+          <label for="securitycode">Security code:</label><input type="text" name="securitycode" value="" required />
         </div>
         <div>
           <input id="submit-btn" type="submit" value="Pay" />
@@ -46,7 +60,18 @@
     </form>
     <script type="text/javascript">
         document.addEventListener("DOMContentLoaded", function() {
-          var config = {};
+          var config = {defaultCardType: "VISA",
+			listeners: {changeCardType: function(event) {
+					if (event.cardType.new.cvcLength[0] == 0) {// TODO refactor this and the shouldFlip, shouldCenter out of updatePan then unittest accordingly
+					    this.elements["securitycode"].setAttributes({"disabled": "disabled"});
+					    this.elements["securitycode"].element.parentElement.style = "display: none;";
+					} else {
+					    this.elements["securitycode"].removeAttribute("disabled");
+					    this.elements["securitycode"].element.parentElement.style = "";
+					}
+				    },
+				},
+	  		};
           var card = new PaymentCard.Card(config);
         });
       </script>

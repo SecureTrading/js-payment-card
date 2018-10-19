@@ -2,11 +2,19 @@ const jsdom = require("jsdom");
 import each from 'jest-each';
 const { JSDOM } = jsdom;
 const defaultHtml = `<!DOCTYPE html><body><p>Hello world</p><div id="st-card-outer-container"></div><form><input name="pan" /><input name="expirydate" /><input name="securitycode" /><input name="nameoncard" /></form></body></html>`;
-const { document } = (new JSDOM(defaultHtml)).window;
+const { document, CustomEvent} = (new JSDOM(defaultHtml)).window;
 global.document = document;
+global.CustomEvent = CustomEvent;
+global.EventTarget = class {
+    constructor() {
+	this.dispatchEvent = jest.fn();
+	this.addEventListener = jest.fn();
+    }
+}; // This is a shim for EventTarget because the one in JSDOM doesn't behave as expected
 const PaymentCard = require('../src/payment-card');
 const fs = require("fs");
 const realTemplate = fs.readFileSync(__dirname + '/../src/template.html', 'utf8');
+
 
 test('auto_init', // Checks we automatically call init
      () => {
@@ -34,16 +42,25 @@ test('init', // Check what we can't check in auto_init because we need to mock i
 	 expect(pc.setEventListeners.mock.calls.length).toBe(1);
      });
 
-each([[{}, {init: true, supported: ["AMEX", "ASTROPAYCARD", "DINERS", "DISCOVER", "JCB", "LASER", "MAESTRO", "MASTERCARD", "VISA"]}],
-      [{init: false}, {init: false, supported: ["AMEX", "ASTROPAYCARD", "DINERS", "DISCOVER", "JCB", "LASER", "MAESTRO", "MASTERCARD", "VISA"]}],
-      [{supported: ["VISA"]}, {init: true, supported: ["VISA"]}],
-      [{init: false, supported: ["VISA", "MASTERCARD"]}, {init: false, supported: ["VISA", "MASTERCARD"]}],
-      [{init: true}, {init: true}],
+each([[{}, {init: true}, []],
+      [{init: false}, {init: false}, []],
+      [{supported: ["VISA"]}, {init: true}, []],
+      [{init: false, supported: ["VISA", "MASTERCARD"]}, {init: false}, []],
+      [{init: true}, {init: true}, []],
+      [{init: false, listeners: {"changeCardType": "callback"}}, {init: false}, [["changeCardType", "callback"]]],
+      [{init: false, listeners: {}}, {init: false}, []],
      ])
 .test('setConfig', // Check different options get set on config correctly
-     (testConfig, expected) => {
-	 const pc = new PaymentCard.Card(testConfig);
+     (testConfig, expected, listeners) => {
+	 const pc = new PaymentCard.Card({init: false});
+	 pc.config = testConfig;
+	 pc.addEventListener = jest.fn();
+	 pc.setConfig();
 	 expect(pc.config).toMatchObject(expected);
+	 expect(pc.addEventListener).toHaveBeenCalledTimes(listeners.length);
+	 for (let i in listeners) {
+	     expect(pc.addEventListener).toHaveBeenNthCalledWith(1+parseInt(i), ...listeners[i]);
+	 }
      });
 
 each([["hello world", "hello world"],
@@ -57,23 +74,6 @@ each([["hello world", "hello world"],
 		 const container = document.querySelector("#st-card-outer-container");
 		 expect(container.innerHTML).toBe(expected);
 	     });
-
-test('getAllCardTypes', 
-     () => {
-	 const pc = new PaymentCard.Card({init: false});
-	 expect(pc.getAllCardTypes()).toMatchObject(["AMEX", "ASTROPAYCARD", "DINERS", "DISCOVER", "JCB", "LASER", "MAESTRO", "MASTERCARD", "VISA"]);
-     });
-
-each([["VISA", {type: "VISA", length: [13, 16, 19]}],
-      ["MASTERCARD", {type: "MASTERCARD", length: [16]}],
-      ["AMEX", {type: "AMEX", length: [15]}],
-     ])
-.test('getCard', 
-      (type, expected) => {
-	  const pc = new PaymentCard.Card({init: false});
-	  expect(pc.getCard(type)).toMatchObject(expected);
-	  expect(Object.keys(pc.getCard(type)).sort()).toMatchObject(["cvcLength", "format", "length", "luhn", "type"]);
-      });
 
 test('setDomElements', 
      () => {
@@ -231,23 +231,6 @@ each([["securitycode", "", "", ""],
 		 expect(pc.overlays["frontsecuritycode"].element.innerHTML).toBe(fscExpected);// Just make sure this isn't changed for the pan
 	     });
 
-each([["VISA", true],
-      ["DELTA", false], // Because we treat DELTA as VISA brand
-      ["VISADEBIT", false], // Not supported (it's known as delta)
-      ["\u2219", false], // utf-8
-      ["MASTERCARD", true],
-      ["", false],
-      [undefined, false],
-      [null, false],
-      [{}, false],
-     ])
-.test('isSupported', 
-     (cardType, expected) => {
-	 const pc = new PaymentCard.Card({init: false});
-	 expect(pc.isSupported(cardType)).toBe(expected);
-     });
-
-
 each([["", false],
       ["4", false],
       ["4111 1111 1111 1111", false],
@@ -268,25 +251,25 @@ each([["", false],
 	 expect(pc.shouldCenter()).toBe(expected);
      });
 
-
-
-each([[0, "", null, "", "st-hide-front-securitycode"],
-      [0, "4111 1111 1111 1111", "VISA", "visa-logo", "st-VISA st-detected st-hide-front-securitycode"],
-      [0, "4111 1111 1111 11111", "VISA", "visa-logo", "st-VISA st-detected st-hide-front-securitycode st-card-centered"],
-      [0, "6011", "MAESTRO", "maestro-logo", "st-MAESTRO st-detected st-hide-front-securitycode"],
-      [4, "6011", null, "", "st-hide-front-securitycode"],
-      [0, "6011 0", "DISCOVER", "discover-logo", "st-DISCOVER st-detected st-hide-front-securitycode"],
-      [0, "41204", "VISA", "visa-logo", "st-VISA st-detected st-hide-front-securitycode"],
-      [0, "53", "MASTERCARD", "mastercard-logo", "st-MASTERCARD st-detected st-hide-front-securitycode"],
-      [0, "5100129111111111", "MASTERCARD", "mastercard-logo", "st-MASTERCARD st-detected st-hide-front-securitycode"], // this is a mastercarddebit card but we've rolled the brand up together
-      [0, "5100 1291 1111 11111", "MASTERCARD", "mastercard-logo", "st-MASTERCARD st-detected st-hide-front-securitycode st-card-centered"],
-      [0, "222", null, "", "st-hide-front-securitycode"],
-      [0, "888", null, "", "st-hide-front-securitycode"],
-      [0, "3456", "AMEX", "amex-logo", "st-AMEX st-detected"], // Amex doesn't flip
+each([[{}, "", null, "", "st-hide-front-securitycode"],
+      [{defaultCardType: "AMEX"}, "", "AMEX", "amex-logo", "st-AMEX st-detected"],
+      [{}, "4111 1111 1111 1111", "VISA", "visa-logo", "st-VISA st-detected st-hide-front-securitycode"],
+      [{}, "6011", "MAESTRO", "maestro-logo", "st-MAESTRO st-detected st-hide-front-securitycode"],
+      [{minMatch: 5}, "6011", null, "", "st-hide-front-securitycode"],
+      [{defaultCardType: "AMEX", maxMatch: 3}, "0000", null, "", "st-hide-front-securitycode"],
+      [{}, "6011 0", "DISCOVER", "discover-logo", "st-DISCOVER st-detected st-hide-front-securitycode"],
+      [{}, "41204", "VISA", "visa-logo", "st-VISA st-detected st-hide-front-securitycode"],
+      [{}, "53", "MASTERCARD", "mastercard-logo", "st-MASTERCARD st-detected st-hide-front-securitycode"],
+      [{}, "5100129111111111", "MASTERCARD", "mastercard-logo", "st-MASTERCARD st-detected st-hide-front-securitycode"], // this is a mastercarddebit card but we've rolled the brand up together
+      [{}, "222", null, "", "st-hide-front-securitycode"],
+      [{}, "888", null, "", "st-hide-front-securitycode"],
+      [{}, "3456", "AMEX", "amex-logo", "st-AMEX st-detected"], // Amex doesn't flip
      ])
     .test('updatePan', 
-     (minMatch, pan, expectedCardType, expectedLogo, expectedClass) => {
-	 const pc = new PaymentCard.Card({init: false, minMatch: minMatch});
+     (config, pan, expectedCardType, expectedLogo, expectedClass) => {
+	 config = Object.assign({init: false, onChangeCardType: jest.fn()}, config)
+	 const pc = new PaymentCard.Card(config);
+	 pc.dispatchEvent = jest.fn();
 	 pc.template = realTemplate;
 	 pc.createCard();
 	 pc.setDomElements();
@@ -299,8 +282,13 @@ each([[0, "", null, "", "st-hide-front-securitycode"],
 	 expect(pc.cardDetails.type).toBe(expectedCardType);
 	 expect(pc.logoImg.getAttribute("src")).toBe(expectedLogo);
 	 expect(pc.container.getAttribute("class")).toBe(expectedClass);
+	 expect(pc.dispatchEvent).toHaveBeenCalledTimes(1);
+	 const expEvent = new CustomEvent("changeCardType", {});
+	 expEvent.cardType = {old: {type: "oldcardtype"},
+			      new: pc.binLookup.getCard(expectedCardType) || {type: null},
+			      }
+	 expect(pc.dispatchEvent).toHaveBeenCalledWith(expEvent);
      });
-
 
 each([[{target: {name: "expirydate"}}, "expirydate"],
       [{target: {name: "securitycode"}}, "securitycode"],
