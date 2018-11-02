@@ -2,7 +2,7 @@ global.EventTarget = class {}; // This is a shim for EventTarget because the one
 import { cardtypedetails } from "../src/cardtype";
 const PaymentCard = require("../src/payment-card");
 
-test('structure', // Checks we have generated a cardtype in the right structure (and have all the card types in our logos in payment-card)
+test('cardtype_structure', // Checks we have generated a cardtype in the right structure (and have all the card types in our logos in payment-card)
      () => {
 	 var expectedAttributes = ["cvcLength", "format", "length", "luhn", "type"];
 	 var paymentTypes = [];

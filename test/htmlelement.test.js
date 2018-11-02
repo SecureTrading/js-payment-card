@@ -33,11 +33,11 @@ each([["myelement", undefined, undefined, "<myelement></myelement>"],
       ["bob", {"onlick":"alert('hello');"}, undefined, "<bob onlick=\"alert('hello');\"></bob>"],
       ["bob", {"markup":'"><p>inject me</p>"'}, undefined, "<bob markup=\"&quot;><p>inject me</p>&quot;\"></bob>"],// HTML Escaped
       ["bob", {"anything":"something"}, "", "<bob anything=\"something\"></bob>"],
-      ["bob", {"anything":"something"}, "my text value", "<bob anything=\"something\">my text value</bob>"],
-      ["p", {"class":"myclass"}, "my super paragraph", "<p class=\"myclass\">my super paragraph</p>"],
+      ["bob", {"anything":"something"}, "my text value\u2219\u263A", "<bob anything=\"something\">my text value\u2219\u263A</bob>"],
+      ["p", {"class":"myclass"}, "my super <p>paragraph</p>", "<p class=\"myclass\">my super &lt;p&gt;paragraph&lt;/p&gt;</p>"],
       [document.createElement("p"), {"class":"myclass"}, "my super paragraph", "<p class=\"myclass\">my super paragraph</p>"],
       ["iframe", {"class":"__privateFieldFrame", "src": "https://webserivces.securetrading.com"}, "", "<iframe class=\"__privateFieldFrame\" src=\"https://webserivces.securetrading.com\"></iframe>"],
-     ]).test("constructor_HtmlElement",
+     ]).test("HtmlElement.constructor",
 	     (element, attributes, text, expected) => {
 		 const inst = new HtmlElement.HtmlElement(element, attributes, text);
 		 expect(inst.element.outerHTML).toBe(expected);
@@ -47,7 +47,7 @@ each([["p", "p"],
       [document.createElement("p"), "p"],
       ["div", "div"],
       ["iframe", "iframe"]
-     ]).test("_create",
+     ]).test("HtmlElement._create",
 	     (element, expectedTag) => {
 		 const inst = new HtmlElement.HtmlElement(element);
 		 inst.element = undefined;
@@ -61,7 +61,7 @@ each([["<input name='expirydate' />", "input[name=expirydate]", null],
       ["", "input[name=expirydate]", new TypeError("Could not find element by CSS selector (input[name=expirydate])")],
       ["div class='cypress'", ".cypress", new TypeError("Could not find element by CSS selector (.cypress)")],
       ["", "", new SyntaxError("'' is not a valid selector")],
-     ]).test("bySelector",
+     ]).test("HtmlElement.bySelector",
 	     (html, selector, error) => {
 		 const testContainer = document.getElementById("basic");
 		 testContainer.innerHTML = html;
@@ -80,7 +80,7 @@ each([[null, "anything", "a value", null, "a value"],
       [{myattr: "abc"}, "myattr", "something with a space", "abc", "something with a space"],
       [{myattr: "abc"}, "myattr", false, "abc", null],
       [{onclick: "abc something"}, "onclick", "alert('hello world');", "abc something", "alert('hello world');"]
-     ]).test("getAttribute_setAttributes_removeAttribute", // personally would split this up more - could be made into a few even simpler tests with less parameters in the test funcs
+     ]).test("HtmlElement.getAttribute_setAttributes_removeAttribute", // personally would split this up more - could be made into a few even simpler tests with less parameters in the test funcs
 	     (attrsBefore, attrName, attrValue, expectedBefore, expected) => {
 		 const inst = new HtmlElement.HtmlElement("div");
 		 if (attrsBefore !== null) {
@@ -104,7 +104,7 @@ each([["div", "click", "a", 0, TypeError],
       ["div", "focus", jest.fn(), 1, null],
       ["input", "paste", jest.fn(), 1, null],
       ["input", "keypress", jest.fn(), 1, null],
-     ]).test("addListener",
+     ]).test("HtmlElement.addListener",
 	     (element, event, listener, expected, error) => {
 		 const inst = new HtmlElement.HtmlElement(element);
 		 expect(() => inst.addListener(event, listener)).throws(error);
@@ -119,19 +119,10 @@ each([["div", "click", "a", 0, TypeError],
 		 }
 	     });
 
-each([["hello world", {}, "hello world"],
-      ["<div>Some html</div>", {}, "&lt;div&gt;Some html&lt;/div&gt;"], // Escaped by default
-      ["\u2219\u263A", {}, "\u2219\u263A"], // Make sure unicode characters work
-     ]).test('constructor', 
-	     (text, attributes, expected) => {
-		 const inst = new HtmlElement.HtmlElement("div", attributes, text);
-		 expect(inst.element.innerHTML).toBe(expected);
-	     });
-
 each([[document.createElement("p"), "<p></p>", "<p><div></div></p>"],
       [document.createElement("div"), "<div></div>", "<div><div></div></div>"],
       [document.createElement("iframe"), "<iframe></iframe>", "<iframe><div></div></iframe>"],      
-     ]).test("appendTo",
+     ]).test("HtmlElement.appendTo",
 	     (obj, expectedBefore, expected) => {
 		 const inst = new HtmlElement.HtmlElement("div");
 		 expect(obj.outerHTML).toBe(expectedBefore);
@@ -142,7 +133,7 @@ each([[document.createElement("p"), "<p></p>", "<p><div></div></p>"],
 each([[document.createElement("p"), "<div><p></p></div>"],
       [document.createElement("div"), "<div><div></div></div>"],
       [document.createElement("iframe"), "<div><iframe></iframe></div>"],
-     ]).test("append",
+     ]).test("HtmlElement.append",
 	     (obj, expected) => {
 		 const inst = new HtmlElement.HtmlElement("div");
 		 expect(inst.element.outerHTML).toBe("<div></div>");
@@ -178,7 +169,7 @@ each([["div", null, "st-test-class", "st-test-class"],
       [new MockDomElement(), "abc", "abc", "abc"],// Add and remove a class which already existed
       [new MockDomElement(), "abc something", "st-test-case", "abc something st-test-case"],
       [new MockDomElement(), "abc", "", "abc"],// Add and remove a class which doesn't exist (this would not be valid for classList due to it's validation)
-     ]).test("addClass__hasClass_removeClass", // personally would split this up more - could be made into a few even simpler tests with less parameters in the test funcs
+     ]).test("HtmlElement.addClass__hasClass_removeClass", // personally would split this up more - could be made into a few even simpler tests with less parameters in the test funcs
 	     (node, classBefore, className, expected) => {
 		 const preexisting = !!(classBefore && className && classBefore.includes(className));
 		 const inst = new HtmlElement.HtmlElement(node);
@@ -210,7 +201,7 @@ each([["my text", undefined, "<div>my text</div>"],
       ["<a href='http://mysite.com'></a>", undefined, "<div>&lt;a href='http://mysite.com'&gt;&lt;/a&gt;</div>"], // HTML escaped
       ["<a href='http://mysite.com'></a>", true, "<div>&lt;a href='http://mysite.com'&gt;&lt;/a&gt;</div>"], // HTML escaped
       ["<a href='http://mysite.com'></a>", false, "<div><a href=\"http://mysite.com\"></a></div>"], // HTML unescaped
-     ]).test("setHtml",
+     ]).test("HtmlElement.setHtml",
 	     (textToAdd, escape, expected) => {
 		 const inst = new HtmlElement.HtmlElement("div");
 		 expect(inst.element.outerHTML).toBe("<div></div>");
@@ -223,7 +214,7 @@ each([["my text", undefined, "my text"],
       ["bob", undefined, "bob"],
       ["", undefined, ""],
       ["<a href='http://mysite.com'></a>", undefined, "&lt;a href='http://mysite.com'&gt;&lt;/a&gt;"], // HTML escaped
-     ]).test("setHtml",
+     ]).test("HtmlElement.setHtml",
 	     (textToAdd, escape, expected) => {
 		 expect(HtmlElement.escapeHtml(textToAdd)).toBe(expected);
 	     });

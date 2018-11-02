@@ -8,7 +8,7 @@ global.CustomEvent = CustomEvent;
 
 const events = require('../src/events');
 
-test("events_CreateEvent",
+test("events.CreateEvent",
     () => {
 	const type = "event";
 	const ev = new events.CreateEvent(type);
@@ -28,7 +28,7 @@ test("events_CreateEvent",
 each([[[], {}],
       [[{type: "new"}, {type: "old"}], {new: {type: "new"}, old: {type: "old"}}],
      ])
-.test("events_ChangeCardTypeEvent",
+.test("events.ChangeCardTypeEvent",
     (args, expected) => {
 	const ev = new events.ChangeCardTypeEvent(...args);
 	expect(ev.cardType).toEqual(expected)
