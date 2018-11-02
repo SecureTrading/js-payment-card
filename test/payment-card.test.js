@@ -35,11 +35,14 @@ test("PaymentCard.init", // Check what we can"t check in auto_init because we ne
 
 	 pc.init();
 
-	 expect(pc.updatePan.mock.calls.length).toBe(1);
-	 expect(pc.updateOverlay.mock.calls.length).toBe(4);
-	 expect(pc.updateOverlay.mock.calls).toMatchObject([["pan"], ["expirydate"], ["securitycode"], ["nameoncard"]]);
+	 expect(pc.updatePan).toHaveBeenCalledTimes(1);
+	 expect(pc.updateOverlay).toHaveBeenCalledTimes(4);
+	 expect(pc.updateOverlay).toHaveBeenNthCalledWith(1, "pan");
+	 expect(pc.updateOverlay).toHaveBeenNthCalledWith(2, "expirydate");
+	 expect(pc.updateOverlay).toHaveBeenNthCalledWith(3, "securitycode");
+	 expect(pc.updateOverlay).toHaveBeenNthCalledWith(4, "nameoncard");
 	 expect(pc.elements.expirydate.getAttribute("placeholder")).toBe("MM/YY");
-	 expect(pc.setEventListeners.mock.calls.length).toBe(1);
+	 expect(pc.setEventListeners).toHaveBeenCalledTimes(1);
      });
 
 each([[{}, {init: true}, []],
@@ -56,7 +59,7 @@ each([[{}, {init: true}, []],
 	 pc.config = testConfig;
 	 pc.addEventListener = jest.fn();
 	 pc.setConfig();
-	 expect(pc.config).toMatchObject(expected);
+	 expect(pc.config).toMatchObject(expected); // WARNING: toMatchObject only tests the keys in the expected are a subset of the actual - to test against {} we MUST use toEqual
 	 expect(pc.addEventListener).toHaveBeenCalledTimes(listeners.length);
 	 for (let i in listeners) {
 	     expect(pc.addEventListener).toHaveBeenNthCalledWith(1+parseInt(i), ...listeners[i]);
@@ -83,12 +86,12 @@ test("PaymentCard.setDomElements",
 	 pc.setDomElements();
 
 	 // Check the elements
-	 expect(pc.elements.pan).toMatchObject({name: "pan", exposedAttributes: ["value"]});
-	 expect(pc.elements.pan.element).toMatchObject({type: "text"});
+	 expect(pc.elements.pan).toMatchObject({name: "pan", exposedAttributes: ["value"]}); // WARNING: toMatchObject only tests the keys in the expected are a subset of the actual - to test against {} we MUST use toEqual
+	 expect(pc.elements.pan.element).toMatchObject({type: "text"}); // WARNING: toMatchObject only tests the keys in the expected are a subset of the actual - to test against {} we MUST use toEqual
 	 expect(pc.elements.pan.element.tagName).toBe("INPUT");
-	 expect(pc.elements.expirydate).toMatchObject({name: "expirydate"});
-	 expect(pc.elements.securitycode).toMatchObject({name: "securitycode"});
-	 expect(pc.elements.nameoncard).toMatchObject({name: "nameoncard"});
+	 expect(pc.elements.expirydate).toMatchObject({name: "expirydate"}); // WARNING: toMatchObject only tests the keys in the expected are a subset of the actual - to test against {} we MUST use toEqual
+	 expect(pc.elements.securitycode).toMatchObject({name: "securitycode"}); // WARNING: toMatchObject only tests the keys in the expected are a subset of the actual - to test against {} we MUST use toEqual
+	 expect(pc.elements.nameoncard).toMatchObject({name: "nameoncard"}); // WARNING: toMatchObject only tests the keys in the expected are a subset of the actual - to test against {} we MUST use toEqual
 
 	 // Check the overlays
 	 expect(pc.overlays.pan.getAttribute("id")).toBe("st-pan-overlay");
@@ -113,7 +116,7 @@ test("PaymentCard.getMaxEntryLimits",
 	 const pc = new PaymentCard.Card({init: false});
 	 pc.getMaxEntryLimits()
 	 
-	 expect(pc.entryLimits).toMatchObject({pan: 19, securitycode: 4});
+	 expect(pc.entryLimits).toMatchObject({pan: 19, securitycode: 4}); // WARNING: toMatchObject only tests the keys in the expected are a subset of the actual - to test against {} we MUST use toEqual
      });
 
 test("PaymentCard.setEventListeners", 
@@ -412,8 +415,9 @@ test("PaymentCard.focusSecurityCode",
 	 pc.cardElement.addClass = jest.fn();
 	 pc.cardElement.removeClass = jest.fn();
 	 pc.focusSecurityCode()
-	 expect(pc.cardElement.addClass.mock.calls).toMatchObject([["st-is-flipped"]]);
-	 expect(pc.cardElement.removeClass.mock.calls).toMatchObject([]);// Not called
+	 expect(pc.cardElement.addClass).toHaveBeenCalledTimes(1);
+	 expect(pc.cardElement.addClass).toHaveBeenCalledWith("st-is-flipped");
+	 expect(pc.cardElement.removeClass).toHaveBeenCalledTimes(0);
      });
 
 test("PaymentCard.focusSecurityCode_noFlip", 
@@ -426,8 +430,8 @@ test("PaymentCard.focusSecurityCode_noFlip",
 	 pc.cardElement.addClass = jest.fn();
 	 pc.cardElement.removeClass = jest.fn();
 	 pc.focusSecurityCode()
-	 expect(pc.cardElement.addClass.mock.calls).toMatchObject([]);// Not called
-	 expect(pc.cardElement.removeClass.mock.calls).toMatchObject([]);// Not called
+	 expect(pc.cardElement.addClass).toHaveBeenCalledTimes(0);
+	 expect(pc.cardElement.removeClass).toHaveBeenCalledTimes(0);
      });
 
 test("PaymentCard.blurSecurityCode", 
@@ -439,6 +443,7 @@ test("PaymentCard.blurSecurityCode",
 	 pc.cardElement.addClass = jest.fn();
 	 pc.cardElement.removeClass = jest.fn();
 	 pc.blurSecurityCode()
-	 expect(pc.cardElement.addClass.mock.calls).toMatchObject([]);
-	 expect(pc.cardElement.removeClass.mock.calls).toMatchObject([["st-is-flipped"]]);
+	 expect(pc.cardElement.addClass).toHaveBeenCalledTimes(0);
+	 expect(pc.cardElement.removeClass).toHaveBeenCalledTimes(1);
+	 expect(pc.cardElement.removeClass).toHaveBeenCalledWith("st-is-flipped");
      });

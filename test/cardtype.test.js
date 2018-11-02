@@ -11,7 +11,7 @@ test('cardtype_structure', // Checks we have generated a cardtype in the right s
 	     for (var attribute in cardtypedetails[i]) {
 		 attributes.push(attribute);
 	     }
-	     expect(attributes.sort()).toMatchObject(expectedAttributes);
+	     expect(attributes.sort()).toEqual(expectedAttributes);
 	     paymentTypes.push(cardtypedetails[i]["type"]);
 	 }
 	 var card = new PaymentCard.Card({init: false});
@@ -19,7 +19,7 @@ test('cardtype_structure', // Checks we have generated a cardtype in the right s
 	 for (var cardPaymentType in card.logos) {
 	     cardPaymentTypes.push(cardPaymentType);
 	 }
-	 expect(paymentTypes.sort()).toMatchObject(cardPaymentTypes.sort());
+	 expect(paymentTypes.sort()).toEqual(cardPaymentTypes.sort());
 	 
      });
      

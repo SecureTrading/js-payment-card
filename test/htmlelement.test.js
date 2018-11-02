@@ -68,7 +68,7 @@ each([["<input name='expirydate' />", "input[name=expirydate]", null],
 		 let inst = null;
 		 expect(() => inst = HtmlElement.HtmlElement.bySelector(selector)).throws(error);
 		 if (!error) {
-		     expect(inst).toMatchObject(new HtmlElement.HtmlElement(document.querySelector(selector)));
+		     expect(inst).toEqual(new HtmlElement.HtmlElement(document.querySelector(selector)));
 		 }
 		 testContainer.innerHTML = "";
 	     });

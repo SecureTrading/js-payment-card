@@ -18,7 +18,7 @@ each([[{}, {default: null, minMatch: 0, maxMatch: 6, supported: ["AMEX", "ASTROP
      (testConfig, expected) => {
 	 if (expected instanceof Object) {
 	     const bl = new binlookup.BinLookup(testConfig);
-	     expect(bl).toMatchObject(expected);
+	     expect(bl).toMatchObject(expected); // WARNING: toMatchObject only tests the keys in the expected are a subset of the actual - to test against {} we MUST use toEqual
 	 } else {
 	     expect(() => {new binlookup.BinLookup(testConfig)}).toThrow(expected);
 	 }
@@ -27,7 +27,7 @@ each([[{}, {default: null, minMatch: 0, maxMatch: 6, supported: ["AMEX", "ASTROP
 test("BinLookup.getAllCardTypes",
      () => {
 	 const bl = new binlookup.BinLookup();
-	 expect(bl.getAllCardTypes()).toMatchObject(["AMEX", "ASTROPAYCARD", "DINERS", "DISCOVER", "JCB", "LASER", "MAESTRO", "MASTERCARD", "PIBA", "VISA"]);
+	 expect(bl.getAllCardTypes()).toEqual(["AMEX", "ASTROPAYCARD", "DINERS", "DISCOVER", "JCB", "LASER", "MAESTRO", "MASTERCARD", "PIBA", "VISA"]);
      });
 
 each([["VISA", true],
@@ -54,8 +54,8 @@ each([["VISA", {type: "VISA", length: [13, 16, 19]}],
 .test("BinLookup.getCard",
       (type, expected) => {
 	  const bl = new binlookup.BinLookup();
-	  expect(bl.getCard(type)).toMatchObject(expected);
-	  expect(Object.keys(bl.getCard(type)).sort()).toMatchObject(["cvcLength", "format", "length", "luhn", "type"]);
+	  expect(bl.getCard(type)).toMatchObject(expected); // WARNING: toMatchObject only tests the keys in the expected are a subset of the actual - to test against {} we MUST use toEqual
+	  expect(Object.keys(bl.getCard(type)).sort()).toEqual(["cvcLength", "format", "length", "luhn", "type"]);
       });
 
 each([["1801", "180", true],
