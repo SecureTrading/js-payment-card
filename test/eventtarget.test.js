@@ -9,13 +9,13 @@ const EventTarget = require('../src/eventtarget');
 const testCallback = jest.fn();
 const testCallback2 = jest.fn();
 
-test('EventTarget_constructor', // Checks we automatically call init
+test('EventTarget.constructor', // Checks we automatically call init
      () => {
 	const et = new EventTarget.EventTarget();
 	expect(et.listeners).toEqual({});
      });
 
-test("EventTarget_addUseRemoveListener",
+test("EventTarget.addUseRemoveListener",
     () => {
 	const et = new EventTarget.EventTarget();
 	const callback = jest.fn();
@@ -63,7 +63,7 @@ each([[{}, ["event", testCallback], {event: [testCallback]}],
       [{event: [testCallback]}, ["event2", testCallback2], {event: [testCallback], event2: [testCallback2]}], // can have callbacks for different events
       [{event: [testCallback]}, ["event2", testCallback], {event: [testCallback], event2: [testCallback]}], // can have the same callback on different events
     ])
-.test("EventTarget_addEventListener",
+.test("EventTarget.addEventListener",
     (before, args, after) => {
 	const et = new EventTarget.EventTarget();
 	const callback = jest.fn();
@@ -80,7 +80,7 @@ each([[{event: [testCallback]}, ["event", testCallback], {event: []}],
       [{event: []}, ["event", testCallback2], {event: []}],
       [{}, ["event", testCallback2], {}],
     ])
-.test("EventTarget_removeEventListener",
+.test("EventTarget.removeEventListener",
     (before, args, after) => {
 	const et = new EventTarget.EventTarget();
 	const callback = jest.fn();
@@ -96,7 +96,7 @@ each([[{event: [null]}, {event: [testEvent1]}],
       [{event: [null], event2: [null, null], noEvent: [null]}, {event: [testEvent1], event2: [testEvent2]}],
       [{}, {}],
     ])
-.test("EventTarget_dispatchEvent",
+.test("EventTarget.dispatchEvent",
     (before, after) => {
 	const et = new EventTarget.EventTarget();
 	Object.values(before).forEach((list) => {

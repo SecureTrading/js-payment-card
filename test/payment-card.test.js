@@ -16,7 +16,7 @@ const fs = require("fs");
 const realTemplate = fs.readFileSync(__dirname + '/../src/template.html', 'utf8');
 
 
-test('auto_init', // Checks we automatically call init
+test("PaymentCard.auto_init", // Checks we automatically call init
      () => {
 	 const pc = new PaymentCard.Card({});
 	 const container = document.querySelector("#st-card-outer-container");
@@ -25,7 +25,7 @@ test('auto_init', // Checks we automatically call init
 	 expect(pc.chipImg.getAttribute("src")).toBe("st-mock-file");
      });
 
-test('init', // Check what we can't check in auto_init because we need to mock it before it's called
+test("PaymentCard.init", // Check what we can"t check in auto_init because we need to mock it before it"s called
      () => {
 	 const pc = new PaymentCard.Card({init: false});
 	 const container = document.querySelector("#st-card-outer-container");
@@ -35,11 +35,14 @@ test('init', // Check what we can't check in auto_init because we need to mock i
 
 	 pc.init();
 
-	 expect(pc.updatePan.mock.calls.length).toBe(1);
-	 expect(pc.updateOverlay.mock.calls.length).toBe(4);
-	 expect(pc.updateOverlay.mock.calls).toMatchObject([["pan"], ["expirydate"], ["securitycode"], ["nameoncard"]]);
+	 expect(pc.updatePan).toHaveBeenCalledTimes(1);
+	 expect(pc.updateOverlay).toHaveBeenCalledTimes(4);
+	 expect(pc.updateOverlay).toHaveBeenNthCalledWith(1, "pan");
+	 expect(pc.updateOverlay).toHaveBeenNthCalledWith(2, "expirydate");
+	 expect(pc.updateOverlay).toHaveBeenNthCalledWith(3, "securitycode");
+	 expect(pc.updateOverlay).toHaveBeenNthCalledWith(4, "nameoncard");
 	 expect(pc.elements.expirydate.getAttribute("placeholder")).toBe("MM/YY");
-	 expect(pc.setEventListeners.mock.calls.length).toBe(1);
+	 expect(pc.setEventListeners).toHaveBeenCalledTimes(1);
      });
 
 each([[{}, {init: true}, []],
@@ -50,13 +53,13 @@ each([[{}, {init: true}, []],
       [{init: false, listeners: {"changeCardType": "callback"}}, {init: false}, [["changeCardType", "callback"]]],
       [{init: false, listeners: {}}, {init: false}, []],
      ])
-.test('setConfig', // Check different options get set on config correctly
+.test("PaymentCard.setConfig", // Check different options get set on config correctly
      (testConfig, expected, listeners) => {
 	 const pc = new PaymentCard.Card({init: false});
 	 pc.config = testConfig;
 	 pc.addEventListener = jest.fn();
 	 pc.setConfig();
-	 expect(pc.config).toMatchObject(expected);
+	 expect(pc.config).toMatchObject(expected); // WARNING: toMatchObject only tests the keys in the expected are a subset of the actual - to test against {} we MUST use toEqual
 	 expect(pc.addEventListener).toHaveBeenCalledTimes(listeners.length);
 	 for (let i in listeners) {
 	     expect(pc.addEventListener).toHaveBeenNthCalledWith(1+parseInt(i), ...listeners[i]);
@@ -66,7 +69,7 @@ each([[{}, {init: true}, []],
 each([["hello world", "hello world"],
       ["<div>Some html</div>", "<div>Some html</div>"], // We have turned escaping off because we control the template we don't expect &lt; etc...
       ["\u2219\u263A", "\u2219\u263A"], // Make sure unicode characters work
-     ]).test('createCard', 
+     ]).test("PaymentCard.createCard", 
 	     (template, expected) => {
 		 const pc = new PaymentCard.Card({init: false});
 		 pc.template = template;
@@ -75,7 +78,7 @@ each([["hello world", "hello world"],
 		 expect(container.innerHTML).toBe(expected);
 	     });
 
-test('setDomElements', 
+test("PaymentCard.setDomElements", 
      () => {
 	 const pc = new PaymentCard.Card({init: false});
 	 pc.template = realTemplate;
@@ -83,12 +86,12 @@ test('setDomElements',
 	 pc.setDomElements();
 
 	 // Check the elements
-	 expect(pc.elements.pan).toMatchObject({name: "pan", exposedAttributes: ["value"]});
-	 expect(pc.elements.pan.element).toMatchObject({type: "text"});
+	 expect(pc.elements.pan).toMatchObject({name: "pan", exposedAttributes: ["value"]}); // WARNING: toMatchObject only tests the keys in the expected are a subset of the actual - to test against {} we MUST use toEqual
+	 expect(pc.elements.pan.element).toMatchObject({type: "text"}); // WARNING: toMatchObject only tests the keys in the expected are a subset of the actual - to test against {} we MUST use toEqual
 	 expect(pc.elements.pan.element.tagName).toBe("INPUT");
-	 expect(pc.elements.expirydate).toMatchObject({name: "expirydate"});
-	 expect(pc.elements.securitycode).toMatchObject({name: "securitycode"});
-	 expect(pc.elements.nameoncard).toMatchObject({name: "nameoncard"});
+	 expect(pc.elements.expirydate).toMatchObject({name: "expirydate"}); // WARNING: toMatchObject only tests the keys in the expected are a subset of the actual - to test against {} we MUST use toEqual
+	 expect(pc.elements.securitycode).toMatchObject({name: "securitycode"}); // WARNING: toMatchObject only tests the keys in the expected are a subset of the actual - to test against {} we MUST use toEqual
+	 expect(pc.elements.nameoncard).toMatchObject({name: "nameoncard"}); // WARNING: toMatchObject only tests the keys in the expected are a subset of the actual - to test against {} we MUST use toEqual
 
 	 // Check the overlays
 	 expect(pc.overlays.pan.getAttribute("id")).toBe("st-pan-overlay");
@@ -108,15 +111,15 @@ test('setDomElements',
 	 expect(pc.logoImg.element.tagName).toBe("IMG");
      });
 
-test('getMaxEntryLimits', 
+test("PaymentCard.getMaxEntryLimits", 
      () => {
 	 const pc = new PaymentCard.Card({init: false});
 	 pc.getMaxEntryLimits()
 	 
-	 expect(pc.entryLimits).toMatchObject({pan: 19, securitycode: 4});
+	 expect(pc.entryLimits).toMatchObject({pan: 19, securitycode: 4}); // WARNING: toMatchObject only tests the keys in the expected are a subset of the actual - to test against {} we MUST use toEqual
      });
 
-test('setEventListeners', 
+test("PaymentCard.setEventListeners", 
      () => {
 	 const pc = new PaymentCard.Card({init: false});
 	 pc.template = realTemplate;
@@ -191,7 +194,7 @@ each([["pan", "4111", "4111", 1],
       ["expirydate", "", "MM/YY", 0],
       ["expirydate", "<b>", "&lt;b&gt;", 0],
      ]
-    ).test('updateOverlay', 
+    ).test("PaymentCard.updateOverlay", 
 	   (type, value, expectedValue, expUpdatePan) => {
 	       const pc = new PaymentCard.Card({init: false});
 	       pc.template = realTemplate;
@@ -219,7 +222,7 @@ each([["securitycode", "", "", ""],
       ["nameoncard", "Hey there Delil", "Hey there Delil", ""], // no cutoff char if not limited
       ["expirydate", "12 / 3456", "12 / 3456", ""],
       ["expirydate", "12345 / 67890", "12345 / 6", ""], // cutoff with no cuttof char
-     ]).test('setOverlay',
+     ]).test("PaymentCard.setOverlay",
 	     (field, set, expected, fscExpected) => {
 		 const pc = new PaymentCard.Card({init: false});
 		 pc.template = realTemplate;
@@ -242,7 +245,7 @@ each([["", false],
       ["5100 1291 1111 11111", true],
       ["5100 1291 1111 1111", false],
      ])
-.test('shouldCenter', 
+.test("PaymentCard.shouldCenter", 
      (value, expected) => {
 	 const pc = new PaymentCard.Card({init: false});
 	 pc.createCard();
@@ -265,7 +268,7 @@ each([[{}, "", null, "", "st-hide-front-securitycode"],
       [{}, "888", null, "", "st-hide-front-securitycode"],
       [{}, "3456", "AMEX", "amex-logo", "st-AMEX st-detected"], // Amex doesn't flip
      ])
-    .test('updatePan', 
+    .test("PaymentCard.updatePan", 
      (config, pan, expectedCardType, expectedLogo, expectedClass) => {
 	 config = Object.assign({init: false, onChangeCardType: jest.fn()}, config)
 	 const pc = new PaymentCard.Card(config);
@@ -294,7 +297,7 @@ each([[{target: {name: "expirydate"}}, "expirydate"],
       [{target: {name: "securitycode"}}, "securitycode"],
       [{target: {name: "nameoncard"}}, "nameoncard"],
       [{target: {name: "pan"}}, "pan"],
-     ]).test('keyUp',
+     ]).test("PaymentCard.keyUp",
 	     (event, expected) => {
 		 const pc = new PaymentCard.Card({init: false});
 		 pc.updateOverlay = jest.fn();
@@ -303,7 +306,7 @@ each([[{target: {name: "expirydate"}}, "expirydate"],
 		 expect(pc.updateOverlay).toHaveBeenCalledWith(expected);
 	     });
 
-test('paste',
+test("PaymentCard.paste",
      () => {
 	 const pc = new PaymentCard.Card({init: false});
 	 const event = {preventDefault: jest.fn()};
@@ -328,7 +331,7 @@ each([["", null, true, 0],
       ["1234", {target: {name: "securitycode"}, which: 52}, "preventDefault", 1],// 4
       ["55555555555555555555", {target: {name: "pan"}, which: 52}, "preventDefault", 1],// 2
       ["Elvis Isn't Dead", {target: {name: "nameoncard"}, which: 52}, true, 1],// we don't use restrictNumerical on the name for obvious reasons but it serves to prove that we don't restrict length based on displayLimits
-     ]).test("restrictNumerical",
+     ]).test("PaymentCard.restrictNumerical",
      (existing, e, expected, expFormats) => {
 	 const pc = new PaymentCard.Card({init: false});
 	 pc.setDomElements();
@@ -364,7 +367,7 @@ each([["securitycode", "1066", null],
       ["pan", "4111111111111111", {value: "4111 1111 1111 1111"}],// most types use this format
       ["pan", "377722222211111", {value: "3777 222222 11111"}],// amex cards have their own format (diners does this too)
       ["pan", "111111111111111", null],// no recognised type: no format
-     ]).test("formatInput",
+     ]).test("PaymentCard.formatInput",
 	     (field, value, expected) => {
 		 const pc = new PaymentCard.Card({init: true});
 		 pc.updatePan = jest.fn(pc.updatePan);
@@ -395,7 +398,7 @@ each([[["AMEX"], "VISA", true],
       [["VISA", "AMEX", "MASTERCARD"], "MASTERCARD", false],
       [[], "AMEX", true],
      ])
-.test('shouldFlip', 
+.test("PaymentCard.shouldFlip", 
      (doNotFlip, cardType, expected) => {
 	 const pc = new PaymentCard.Card({init: false});
 	 pc.doNotFlip = doNotFlip;
@@ -403,7 +406,7 @@ each([[["AMEX"], "VISA", true],
 	 expect(pc.shouldFlip()).toBe(expected);
      });
 
-test('focusSecurityCode', 
+test("PaymentCard.focusSecurityCode", 
      () => {
 	 const pc = new PaymentCard.Card({init: false});
 	 pc.template = realTemplate;
@@ -412,11 +415,12 @@ test('focusSecurityCode',
 	 pc.cardElement.addClass = jest.fn();
 	 pc.cardElement.removeClass = jest.fn();
 	 pc.focusSecurityCode()
-	 expect(pc.cardElement.addClass.mock.calls).toMatchObject([["st-is-flipped"]]);
-	 expect(pc.cardElement.removeClass.mock.calls).toMatchObject([]);// Not called
+	 expect(pc.cardElement.addClass).toHaveBeenCalledTimes(1);
+	 expect(pc.cardElement.addClass).toHaveBeenCalledWith("st-is-flipped");
+	 expect(pc.cardElement.removeClass).toHaveBeenCalledTimes(0);
      });
 
-test('focusSecurityCode_noFlip', 
+test("PaymentCard.focusSecurityCode_noFlip", 
      () => {
 	 const pc = new PaymentCard.Card({init: false});
 	 pc.template = realTemplate;
@@ -426,11 +430,11 @@ test('focusSecurityCode_noFlip',
 	 pc.cardElement.addClass = jest.fn();
 	 pc.cardElement.removeClass = jest.fn();
 	 pc.focusSecurityCode()
-	 expect(pc.cardElement.addClass.mock.calls).toMatchObject([]);// Not called
-	 expect(pc.cardElement.removeClass.mock.calls).toMatchObject([]);// Not called
+	 expect(pc.cardElement.addClass).toHaveBeenCalledTimes(0);
+	 expect(pc.cardElement.removeClass).toHaveBeenCalledTimes(0);
      });
 
-test('blurSecurityCode', 
+test("PaymentCard.blurSecurityCode", 
      () => {
 	 const pc = new PaymentCard.Card({init: false});
 	 pc.template = realTemplate;
@@ -439,6 +443,7 @@ test('blurSecurityCode',
 	 pc.cardElement.addClass = jest.fn();
 	 pc.cardElement.removeClass = jest.fn();
 	 pc.blurSecurityCode()
-	 expect(pc.cardElement.addClass.mock.calls).toMatchObject([]);
-	 expect(pc.cardElement.removeClass.mock.calls).toMatchObject([["st-is-flipped"]]);
+	 expect(pc.cardElement.addClass).toHaveBeenCalledTimes(0);
+	 expect(pc.cardElement.removeClass).toHaveBeenCalledTimes(1);
+	 expect(pc.cardElement.removeClass).toHaveBeenCalledWith("st-is-flipped");
      });
