@@ -69,11 +69,13 @@ export class Card extends EventTarget {
 	this.getMaxEntryLimits();
 
 	for (let field in this.elements) {
-	    this.setOverlay(field, this.placeholders[field]);
-	    if (field == "pan") {
-		this.updatePan();
-	    }
-	    this.updateOverlay(field);
+		if (field !== "hiddenexpirymonth" && field != "hiddenexpiryyear") {
+	 	   	this.setOverlay(field, this.placeholders[field]);
+	    	if (field == "pan") {
+				this.updatePan();
+	    	}
+			this.updateOverlay(field);
+		}
 	}
 	this.setEventListeners();
 	
@@ -98,6 +100,8 @@ export class Card extends EventTarget {
     setDomElements() {
 	this.elements = {pan: HtmlElement.bySelector("input[name=pan]"),
 			 expirydate: HtmlElement.bySelector("input[name=expirydate]"),
+			 hiddenexpirymonth: HtmlElement.bySelector("input[name=cc-exp-month]"),// TODO put this in the form automatically as opacity:0 fields (currently in test.html)
+			 hiddenexpiryyear: HtmlElement.bySelector("input[name=cc-exp-year]"),
 			 securitycode: HtmlElement.bySelector("input[name=securitycode]"),
 			 nameoncard: HtmlElement.bySelector("input[name=nameoncard]"),
 			};
@@ -126,17 +130,37 @@ export class Card extends EventTarget {
 
     setEventListeners(){
 	for (let field in this.elements) {
-	    this.elements[field].addListener("keyup", this.keyUp.bind(this));
-	    this.elements[field].addListener("change", this.keyUp.bind(this));
-	    this.elements[field].addListener("paste", this.paste.bind(this));
-	    if (field !== "nameoncard") {
-		this.elements[field].addListener("keypress", this.restrictNumerical.bind(this));
-	    }
+		if (field !== "hiddenexpirymonth" && field != "hiddenexpiryyear") {
+	 	   	this.elements[field].addListener("keyup", this.keyUp.bind(this));
+	    	this.elements[field].addListener("change", this.keyUp.bind(this));
+	    	this.elements[field].addListener("paste", this.paste.bind(this));
+	    	if (field !== "nameoncard") {
+				this.elements[field].addListener("keypress", this.restrictNumerical.bind(this));
+			}
+		}
 	}
 	this.elements.securitycode.addListener("focus", this.focusSecurityCode.bind(this));
 	this.elements.securitycode.addListener("blur", this.blurSecurityCode.bind(this));
+	this.elements.nameoncard.addListener("animationstart", this.expiryDateAutoFill.bind(this));
+	this.elements.nameoncard.addListener("webkitAnimationStart", this.expiryDateAutoFill.bind(this));
     }
-    
+	
+	expiryDateAutoFill(e) {
+		if (e.animationName == "autofillstart") {
+			let that = this;
+			setTimeout(function(){
+				let month = that.elements.hiddenexpirymonth.getAttribute("value");
+				let year = that.elements.hiddenexpiryyear.getAttribute("value");
+				that.elements.expirydate.setAttributes({value: month+"/"+year});
+			}, 10);
+			
+		} else if (e.animationName == "autofillcancel") {
+			console.log("TODO HERE CANCEL");
+			console.log(this.elements.hiddenexpirymonth.getAttribute("value"));
+			
+		}
+	}
+
     updateOverlay(type) {
 	this.formatInput(type);
 	let value = this.elements[type].getAttribute("value");
