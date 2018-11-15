@@ -203,9 +203,9 @@ div.st-ASTROPAYCARD .st-card-side #st-payment-logo {
 }
 
 .is-autofilled {
-    background-color: rgb(250, 255, 189);
-    background-image: none;
-    color: rgb(0, 0, 0);
+    background-color: rgb(250, 255, 189)!important;
+    background-image: none!important;
+    color: rgb(0, 0, 0)!important;
 }
 
 :not(:-webkit-autofill) {
@@ -217,5 +217,9 @@ div.st-ASTROPAYCARD .st-card-side #st-payment-logo {
     width: 2px;
     z-index: -1;
     left: -2px;
+    height: 0;
+    padding: 0!important;
+    margin: 0;
+    border-style: none;
 }
 

@@ -101,7 +101,8 @@ export class Card extends EventTarget {
 			 securitycode: HtmlElement.bySelector("input[name=securitycode]"),
 			 nameoncard: HtmlElement.bySelector("input[name=nameoncard]"),
 			};
-
+	
+	this.setAutocomplete();
 	this.autofillElements = {};// TODO unittest
 	this.addAutoFillElement("expirymonth", "cc-exp-month", this.elements.pan.getParent());
 	this.addAutoFillElement("expiryyear", "cc-exp-year", this.elements.pan.getParent());
@@ -116,6 +117,13 @@ export class Card extends EventTarget {
 	this.cardElement = HtmlElement.bySelector("div#st-card");
 	this.chipImg = HtmlElement.bySelector("img#st-chip-logo");
 	this.logoImg = HtmlElement.bySelector("img#st-payment-logo");
+    }
+
+    setAutocomplete() {
+	this.elements.pan.setAttributes({"autocomplete": "cc-number"});
+	this.elements.expirydate.setAttributes({"autocomplete": "cc-exp"});
+	this.elements.securitycode.setAttributes({"autocomplete": "cc-csc"});
+	this.elements.nameoncard.setAttributes({"autocomplete": "cc-name"});
     }
 
     addAutoFillElement(name, type, parent) {// TODO unittest
