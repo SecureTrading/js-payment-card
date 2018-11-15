@@ -126,7 +126,7 @@ test("PaymentCard.setEventListeners",
 	 pc.createCard();
 	 pc.setDomElements();
 
-	 const expectAddCalls = {"pan": 4,
+	 const expectAddCalls = {"pan": 6,
 				 "expirydate": 4,
 				 "nameoncard": 3,
 				 "securitycode": 6,

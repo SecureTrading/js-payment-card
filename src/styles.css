@@ -187,3 +187,35 @@ div.st-ASTROPAYCARD .st-card-side #st-payment-logo {
     left: 0;
     width: 100%;
 }
+
+@keyframes autofillstart {
+    from { /* empty animation */ }
+    to { /* empty animation */ }
+}
+
+@keyframes autofillcancel {
+    from { /* empty animation */ }
+    to { /* empty animation */ }
+}
+
+:-webkit-autofill {
+    animation: autofillstart 40s linear 0s infinite;
+}
+
+.is-autofilled {
+    background-color: rgb(250, 255, 189);
+    background-image: none;
+    color: rgb(0, 0, 0);
+}
+
+:not(:-webkit-autofill) {
+    animation: autofillcancel 40s linear 0s infinite;
+}
+
+.autofill-input { /* TODO do we want any more styling on this e.g. width/position so it's always off screen */
+    opacity: 0;
+    width: 2px;
+    z-index: -1;
+    left: -2px;
+}
+

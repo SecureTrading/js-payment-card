@@ -69,13 +69,11 @@ export class Card extends EventTarget {
 	this.getMaxEntryLimits();
 
 	for (let field in this.elements) {
-		if (field !== "hiddenexpirymonth" && field != "hiddenexpiryyear") {
-	 	   	this.setOverlay(field, this.placeholders[field]);
-	    	if (field == "pan") {
-				this.updatePan();
-	    	}
-			this.updateOverlay(field);
-		}
+	    this.setOverlay(field, this.placeholders[field]);
+	    if (field == "pan") {
+		this.updatePan();
+	    }
+	    this.updateOverlay(field);
 	}
 	this.setEventListeners();
 	
@@ -100,11 +98,14 @@ export class Card extends EventTarget {
     setDomElements() {
 	this.elements = {pan: HtmlElement.bySelector("input[name=pan]"),
 			 expirydate: HtmlElement.bySelector("input[name=expirydate]"),
-			 hiddenexpirymonth: HtmlElement.bySelector("input[name=cc-exp-month]"),// TODO put this in the form automatically as opacity:0 fields (currently in test.html)
-			 hiddenexpiryyear: HtmlElement.bySelector("input[name=cc-exp-year]"),
 			 securitycode: HtmlElement.bySelector("input[name=securitycode]"),
 			 nameoncard: HtmlElement.bySelector("input[name=nameoncard]"),
 			};
+
+	this.autofillElements = {};// TODO unittest
+	this.addAutoFillElement("expirymonth", "cc-exp-month", this.elements.pan.getParent());
+	this.addAutoFillElement("expiryyear", "cc-exp-year", this.elements.pan.getParent());
+
 	this.overlays = {pan: HtmlElement.bySelector("div#st-pan-overlay"),
 			 expirydate: HtmlElement.bySelector("div#st-expirydate-overlay"),
 			 nameoncard: HtmlElement.bySelector("div#st-nameoncard-overlay"),
@@ -115,6 +116,12 @@ export class Card extends EventTarget {
 	this.cardElement = HtmlElement.bySelector("div#st-card");
 	this.chipImg = HtmlElement.bySelector("img#st-chip-logo");
 	this.logoImg = HtmlElement.bySelector("img#st-payment-logo");
+    }
+
+    addAutoFillElement(name, type, parent) {// TODO unittest
+	var autoFillElement = new HtmlElement("input", {type: "number", autocomplete: type, class: "autofill-input"}); // Note we don't add the name attribute to this so we don't ever submit the expirymonth/year
+	autoFillElement.appendTo(parent);
+	this.autofillElements[name] = autoFillElement;
     }
 
     getMaxEntryLimits() {
@@ -130,36 +137,46 @@ export class Card extends EventTarget {
 
     setEventListeners(){
 	for (let field in this.elements) {
-		if (field !== "hiddenexpirymonth" && field != "hiddenexpiryyear") {
-	 	   	this.elements[field].addListener("keyup", this.keyUp.bind(this));
-	    	this.elements[field].addListener("change", this.keyUp.bind(this));
-	    	this.elements[field].addListener("paste", this.paste.bind(this));
-	    	if (field !== "nameoncard") {
-				this.elements[field].addListener("keypress", this.restrictNumerical.bind(this));
-			}
-		}
+	    this.elements[field].addListener("keyup", this.keyUp.bind(this));
+	    this.elements[field].addListener("change", this.keyUp.bind(this));
+	    this.elements[field].addListener("paste", this.paste.bind(this));
+	    if (field !== "nameoncard") {
+		this.elements[field].addListener("keypress", this.restrictNumerical.bind(this));
+	    }
 	}
 	this.elements.securitycode.addListener("focus", this.focusSecurityCode.bind(this));
 	this.elements.securitycode.addListener("blur", this.blurSecurityCode.bind(this));
-	this.elements.nameoncard.addListener("animationstart", this.expiryDateAutoFill.bind(this));
-	this.elements.nameoncard.addListener("webkitAnimationStart", this.expiryDateAutoFill.bind(this));
+
+	this.elements.pan.addListener("animationstart", this.onAutoFill.bind(this));// TODO unittest
+	this.elements.pan.addListener("webkitAnimationStart", this.onAutoFill.bind(this));
     }
 	
-	expiryDateAutoFill(e) {
-		if (e.animationName == "autofillstart") {
-			let that = this;
-			setTimeout(function(){
-				let month = that.elements.hiddenexpirymonth.getAttribute("value");
-				let year = that.elements.hiddenexpiryyear.getAttribute("value");
-				that.elements.expirydate.setAttributes({value: month+"/"+year});
-			}, 10);
-			
-		} else if (e.animationName == "autofillcancel") {
-			console.log("TODO HERE CANCEL");
-			console.log(this.elements.hiddenexpirymonth.getAttribute("value"));
-			
-		}
+    onAutoFill(e) {// TODO unittest
+	if (e.animationName == "autofillstart") {
+	    setTimeout(this.autofillExpiry.bind(this), 100); // Have to set the timeout so that we wait for the field to be populated
+	} else if (e.animationName == "autofillcancel") {
+	    this.cancelAutofill();
 	}
+    }
+    
+    autofillExpiry() {// TODO unittest
+	let month = this.autofillElements.expirymonth.getAttribute("value");
+	let year = this.autofillElements.expiryyear.getAttribute("value");
+	this.elements.expirydate.setAttributes({value: month+"/"+year});
+	this.updateOverlay("expirydate");
+	this.elements.expirydate.addClass("is-autofilled");
+	for (let field in this.elements) {
+	    if (this.elements[field].matches(":-webkit-autofill")) {
+		this.elements[field].addClass("is-autofilled");
+	    }
+	}
+    }
+
+    cancelAutofill() {// TODO unittest
+	for (let field in this.elements) {
+	    this.elements[field].removeClass("is-autofilled");
+	}
+    }
 
     updateOverlay(type) {
 	this.formatInput(type);

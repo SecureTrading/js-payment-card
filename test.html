@@ -36,23 +36,6 @@
         background: #eee;
 	      color: #bbb;
       }
-      @keyframes autofillstart {
-  from {/**/}
-  to {/**/}
-}
-@keyframes autofillcancel {
-  from {/**/}
-  to {/**/}
-}
-      :-webkit-autofill {
-        animation: autofillstart 40s linear 0s infinite;
-      }
-      :not(:-webkit-autofill) {
-        animation: autofillcancel 40s linear 0s infinite;
-      }
-      .is-hidden {
-        opacity:0;
-      }
     </style>
   </head>
   <body>
@@ -61,8 +44,6 @@
         <div id="st-card-outer-container"></div>
         <div>
           <label for="pan">Card number:</label><input name="pan" value="" autocomplete="cc-number" />
-          <input class="is-hidden" type="number" name="cc-exp-month" autocomplete="cc-exp-month" />
-          <input class="is-hidden" type="number" name="cc-exp-year" autocomplete="cc-exp-year" />
         </div>
         <div>
           <label for="expirydate">Expiry date:</label><input name="expirydate" value="" autocomplete="off" />
