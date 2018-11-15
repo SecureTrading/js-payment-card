@@ -211,7 +211,7 @@ div.st-ASTROPAYCARD .st-card-side #st-payment-logo {
     color: rgb(0, 0, 0) !important;
 }
 
-.autofill-input { /* TODO do we want any more styling on this e.g. width/position so it's always off screen */
+.autofill-input {
     opacity: 0;
     width: 2px;
     z-index: -1;

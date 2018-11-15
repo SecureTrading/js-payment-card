@@ -102,7 +102,7 @@ export class HtmlElement {
 	this.element.innerHTML = html;
     }
 
-    matches(selector) { // TODO unittest
+    matches(selector) {
 	var matches = ( this.element.matches || this.element.msMatchesSelector );
 	try {
 	    return matches.call(this.element, selector);
@@ -111,7 +111,7 @@ export class HtmlElement {
 	}
     }
 
-    getParent() { // TODO unittest
+    getParent() {
 	return this.element.parentNode;
     }
 

@@ -52,6 +52,7 @@ export class Card extends EventTarget {
 			      expirydate: 9,
 			      };
 	this.displayCutoff = {nameoncard: "\u2026"};
+	this.autofillSelector = ":-webkit-autofill";
 
 	this.setConfig();
 	if (this.config.init) {
@@ -103,9 +104,9 @@ export class Card extends EventTarget {
 			};
 	
 	this.setAutocomplete();
-	this.autofillElements = {};// TODO unittest
-	this.addAutoFillElement("expirymonth", "cc-exp-month", this.elements.pan.getParent());
-	this.addAutoFillElement("expiryyear", "cc-exp-year", this.elements.pan.getParent());
+	this.autofillElements = {};
+	this.addAutofillElement("expirymonth", "cc-exp-month", this.elements.pan.getParent());
+	this.addAutofillElement("expiryyear", "cc-exp-year", this.elements.pan.getParent());
 
 	this.overlays = {pan: HtmlElement.bySelector("div#st-pan-overlay"),
 			 expirydate: HtmlElement.bySelector("div#st-expirydate-overlay"),
@@ -119,17 +120,17 @@ export class Card extends EventTarget {
 	this.logoImg = HtmlElement.bySelector("img#st-payment-logo");
     }
 
-    setAutocomplete() { // TODO unittest
+    setAutocomplete() {
 	this.elements.pan.setAttributes({"autocomplete": "cc-number"});
 	this.elements.expirydate.setAttributes({"autocomplete": "cc-exp"});
 	this.elements.securitycode.setAttributes({"autocomplete": "cc-csc"});
 	this.elements.nameoncard.setAttributes({"autocomplete": "cc-name"});
     }
 
-    addAutoFillElement(name, type, parent) {// TODO unittest
-	var autoFillElement = new HtmlElement("input", {type: "number", autocomplete: type, class: "autofill-input"}); // Note we don't add the name attribute to this so we don't ever submit the expirymonth/year
-	autoFillElement.appendTo(parent);
-	this.autofillElements[name] = autoFillElement;
+    addAutofillElement(name, type, parent) {
+	var autofillElement = new HtmlElement("input", {type: "number", autocomplete: type, class: "autofill-input"}); // Note we don't add the name attribute to this so we don't ever submit the expirymonth/year
+	autofillElement.appendTo(parent);
+	this.autofillElements[name] = autofillElement;
     }
 
     getMaxEntryLimits() {
@@ -155,11 +156,11 @@ export class Card extends EventTarget {
 	this.elements.securitycode.addListener("focus", this.focusSecurityCode.bind(this));
 	this.elements.securitycode.addListener("blur", this.blurSecurityCode.bind(this));
 
-	this.elements.pan.addListener("animationstart", this.onAutoFill.bind(this));// TODO unittest
-	this.elements.pan.addListener("webkitAnimationStart", this.onAutoFill.bind(this));
+	this.elements.pan.addListener("animationstart", this.onAutofill.bind(this));
+	this.elements.pan.addListener("webkitAnimationStart", this.onAutofill.bind(this));
     }
 	
-    onAutoFill(e) {// TODO unittest
+    onAutofill(e) {
 	if (e.animationName == "autofillstart") {
 	    setTimeout(this.autofillExpiry.bind(this), 50); // Have to set the timeout so that we wait for the field to be populated
 	} else if (e.animationName == "autofillcancel") {
@@ -167,20 +168,20 @@ export class Card extends EventTarget {
 	}
     }
     
-    autofillExpiry() {// TODO unittest
+    autofillExpiry() {
 	let month = this.autofillElements.expirymonth.getAttribute("value");
 	let year = this.autofillElements.expiryyear.getAttribute("value");
 	this.elements.expirydate.setAttributes({value: month+"/"+year});
 	this.updateOverlay("expirydate");
 	this.elements.expirydate.addClass("is-autofilled");
 	for (let field in this.elements) {
-	    if (this.elements[field].matches(":-webkit-autofill")) {
+	    if (this.elements[field].matches(this.autofillSelector)) {
 		this.elements[field].addClass("is-autofilled");
 	    }
 	}
     }
 
-    cancelAutofill() {// TODO unittest
+    cancelAutofill() {
 	for (let field in this.elements) {
 	    this.elements[field].removeClass("is-autofilled");
 	}

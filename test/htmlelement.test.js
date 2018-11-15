@@ -1,7 +1,7 @@
 const jsdom = require("jsdom");
 import each from 'jest-each';
 const { JSDOM } = jsdom;
-const defaultHtml = `<!DOCTYPE html><body><div id="basic"></div></body></html>`;
+const defaultHtml = `<!DOCTYPE html><body><div id="basic"></div><div id="another"><div id="sub"></div></div></body></html>`;
 const { document } = (new JSDOM(defaultHtml)).window;
 global.document = document;
 const HtmlElement = require('../src/htmlelement');
@@ -217,4 +217,28 @@ each([["my text", undefined, "my text"],
      ]).test("HtmlElement.setHtml",
 	     (textToAdd, escape, expected) => {
 		 expect(HtmlElement.escapeHtml(textToAdd)).toBe(expected);
+	     });
+
+each([["basic", "div[id=basic]", true],
+      ["sub", ":-webkit-autofill", false],
+      ["sub", ":webkit-autofill", false], // This is considered an invalid selector
+      ["basic", "div[id=sub]", false],
+     ]).test("HtmlElement.matches",
+	     (id, selector, expected) => {
+		 const element = HtmlElement.HtmlElement.bySelector("div[id="+id+"]");
+		 expect(element.matches(selector)).toBe(expected);
+		 element.element.msMatchesSelector = element.element.matches;
+		 element.element.matches = undefined;// I.E. doesn't have this defined so we should use msMatchesSelector instead
+		 expect(element.matches(selector)).toBe(expected);
+	     });
+
+each([["basic", "BODY", ""],
+      ["another", "BODY", ""],
+      ["sub", "DIV", "another"],
+     ]).test("HtmlElement.getParent",
+	     (id, expTag, expId) => {
+		 const element = HtmlElement.HtmlElement.bySelector("div[id="+id+"]");
+		 const parent = element.getParent();
+		 expect(parent.tagName).toBe(expTag);
+		 expect(parent.id).toBe(expId);
 	     });
