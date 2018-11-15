@@ -119,7 +119,7 @@ export class Card extends EventTarget {
 	this.logoImg = HtmlElement.bySelector("img#st-payment-logo");
     }
 
-    setAutocomplete() {
+    setAutocomplete() { // TODO unittest
 	this.elements.pan.setAttributes({"autocomplete": "cc-number"});
 	this.elements.expirydate.setAttributes({"autocomplete": "cc-exp"});
 	this.elements.securitycode.setAttributes({"autocomplete": "cc-csc"});
@@ -161,7 +161,7 @@ export class Card extends EventTarget {
 	
     onAutoFill(e) {// TODO unittest
 	if (e.animationName == "autofillstart") {
-	    setTimeout(this.autofillExpiry.bind(this), 100); // Have to set the timeout so that we wait for the field to be populated
+	    setTimeout(this.autofillExpiry.bind(this), 50); // Have to set the timeout so that we wait for the field to be populated
 	} else if (e.animationName == "autofillcancel") {
 	    this.cancelAutofill();
 	}
