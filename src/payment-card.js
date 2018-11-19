@@ -121,14 +121,14 @@ export class Card extends EventTarget {
     }
 
     setAutocomplete() {
-	this.elements.pan.setAttributes({"autocomplete": "cc-number"});
-	this.elements.expirydate.setAttributes({"autocomplete": "cc-exp"});
-	this.elements.securitycode.setAttributes({"autocomplete": "cc-csc"});
-	this.elements.nameoncard.setAttributes({"autocomplete": "cc-name"});
+	this.elements.pan.setAttributes({"autocomplete": "cc-number", "tabindex": "0"});
+	this.elements.expirydate.setAttributes({"autocomplete": "cc-exp", "tabindex": "0"});
+	this.elements.securitycode.setAttributes({"autocomplete": "cc-csc", "tabindex": "0"});
+	this.elements.nameoncard.setAttributes({"autocomplete": "cc-name", "tabindex": "0"});
     }
 
     addAutofillElement(name, type, parent) {
-	var autofillElement = new HtmlElement("input", {type: "number", autocomplete: type, class: "autofill-input"}); // Note we don't add the name attribute to this so we don't ever submit the expirymonth/year
+	var autofillElement = new HtmlElement("input", {type: "number", autocomplete: type, class: "autofill-input", tabindex: "-1"}); // Note we don't add the name attribute to this so we don't ever submit the expirymonth/year
 	autofillElement.appendTo(parent);
 	this.autofillElements[name] = autofillElement;
     }
@@ -158,19 +158,22 @@ export class Card extends EventTarget {
 
 	this.elements.pan.addListener("animationstart", this.onAutofill.bind(this));
 	this.elements.pan.addListener("webkitAnimationStart", this.onAutofill.bind(this));
+	this.autofillElements.expiryyear.addListener("blur", this.onAutofill.bind(this));
     }
 	
     onAutofill(e) {
-	if (e.animationName == "autofillstart") {
+	if (e.animationName == "autofillstart" || e.type == "blur") {
 	    setTimeout(this.autofillExpiry.bind(this), 50); // Have to set the timeout so that we wait for the field to be populated
 	} else if (e.animationName == "autofillcancel") {
 	    this.cancelAutofill();
 	}
+	
     }
     
     autofillExpiry() {
 	let month = this.autofillElements.expirymonth.getAttribute("value");
 	let year = this.autofillElements.expiryyear.getAttribute("value");
+	if (month && year) {
 	this.elements.expirydate.setAttributes({value: month+"/"+year});
 	this.updateOverlay("expirydate");
 	this.elements.expirydate.addClass("is-autofilled");
@@ -179,6 +182,7 @@ export class Card extends EventTarget {
 		this.elements[field].addClass("is-autofilled");
 	    }
 	}
+	}	
     }
 
     cancelAutofill() {
