@@ -129,6 +129,7 @@ test("PaymentCard.setAutocomplete",
 	 expect(pc.elements.expirydate.getAttribute("autocomplete")).toBe("cc-exp");
 	 expect(pc.elements.securitycode.getAttribute("autocomplete")).toBe("cc-csc");
 	 expect(pc.elements.nameoncard.getAttribute("autocomplete")).toBe("cc-name");
+	 expect(pc.elements.nameoncard.getAttribute("tabindex")).toBe("0");
      });
 
 test("PaymentCard.addAutofillElement", 
@@ -150,6 +151,7 @@ test("PaymentCard.addAutofillElement",
 	 expect(pc.autofillElements["bob"].getAttribute("type")).toBe("number");
 	 expect(pc.autofillElements["bob"].getAttribute("autocomplete")).toBe("cc-exp-month");
 	 expect(pc.autofillElements["bob"].getAttribute("class")).toBe("autofill-input");
+	 expect(pc.autofillElements["bob"].getAttribute("tabindex")).toBe("-1");
 	 expect(pc.autofillElements["steve"].getAttribute("type")).toBe("number");
 	 expect(pc.autofillElements["steve"].getAttribute("autocomplete")).toBe("anything");
 	 expect(pc.autofillElements["steve"].getAttribute("class")).toBe("autofill-input");
@@ -182,7 +184,7 @@ test("PaymentCard.setEventListeners",
 			       "restrictNumerical": 3,
 			       "focusSecurityCode": 1,
 			       "blurSecurityCode": 1,
-			       "onAutofill": 2,
+			       "onAutofill": 3,
 			      }
 
 	 for (let element in expectAddCalls) {
@@ -215,13 +217,17 @@ test("PaymentCard.setEventListeners",
 	     }
 	 }
 });
-each([["unknown", 0, 0],
-      ["autofillstart", 1, 0],
-      ["autofillcancel", 0, 1],
+each([[{animationName: "unknown"}, 0, 0],
+      [{animationName: "autofillstart"}, 1, 0],
+      [{type: "blur"}, 1, 0],
+      [{type: "other"}, 0, 0],
+      [{animationName: "autofillcancel"}, 0, 1],
+      [{animationName: "autofillcancel", type: "other"}, 0, 1],
+      [{animationName: "autofillcancel", type: "blur"}, 1, 0],
       ]
     ).test("PaymentCard.onAutofill", 
-	   (name, expAutofill, expCancelAutofill) => {
-	       const e = {animationName: name};
+	   (event, expAutofill, expCancelAutofill) => {
+	       const e = event;
 	       const pc = new PaymentCard.Card({init: false});
 	       pc.autofillExpiry = jest.fn();
 	       pc.cancelAutofill = jest.fn();
@@ -243,11 +249,10 @@ test("PaymentCard.autofillExpiry",
 	 pc.updateOverlay = jest.fn();
 	 try {
 	     expect(pc.elements.expirydate.getAttribute("value")).toBe("");
-	     
 	     pc.autofillExpiry();
 
-	     expect(pc.updateOverlay).toHaveBeenCalledWith("expirydate");
-	     expect(pc.elements.expirydate.getAttribute("value")).toBe("/");
+	     expect(pc.updateOverlay).toHaveBeenCalledTimes(0);
+	     expect(pc.elements.expirydate.getAttribute("value")).toBe("");
 	     
 	     pc.autofillElements.expirymonth.setAttributes({"value": "12"})
 	     pc.autofillElements.expiryyear.setAttributes({"value": "2022"})
