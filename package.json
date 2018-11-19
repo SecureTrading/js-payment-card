@@ -6,8 +6,12 @@
   "scripts": {
     "build": "webpack",
     "debug": "webpack --mode=none",
-    "lint": "./node_modules/.bin/eslint ./src/*.js && ./node_modules/.bin/stylelint ./src/*.css",
-    "test": "npm run lint && jest test --coverage --testPathIgnorePatterns='integration/'",
+    "fixlint": "./node_modules/.bin/eslint ./src/*.js --fix",
+    "lint": "npm run eslint && npm run stylelint",
+    "eslint": "./node_modules/.bin/eslint ./src/*.js",
+    "stylelint": "./node_modules/.bin/stylelint ./src/*.css",
+    "test": "npm run lint && npm run jest",
+    "jest": "jest test --testPathIgnorePatterns=\"integration/\" --coverage",
     "server": "http-server ./ &",
     "integration": "jest integration --detectOpenHandles"
   },
