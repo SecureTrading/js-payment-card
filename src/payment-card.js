@@ -174,15 +174,17 @@ export class Card extends EventTarget {
 	let month = this.autofillElements.expirymonth.getAttribute("value");
 	let year = this.autofillElements.expiryyear.getAttribute("value");
 	if (month && year) {
-	this.elements.expirydate.setAttributes({value: month+"/"+year});
-	this.updateOverlay("expirydate");
-	this.elements.expirydate.addClass("is-autofilled");
-	for (let field in this.elements) {
-	    if (this.elements[field].matches(this.autofillSelector)) {
-		this.elements[field].addClass("is-autofilled");
+	    this.elements.expirydate.setAttributes({value: month+"/"+year});
+	    this.updateOverlay("expirydate");
+	    this.elements.expirydate.addClass("is-autofilled");
+	    for (let field in this.elements) {
+		if (this.elements[field].matches(this.autofillSelector)) {
+		    this.elements[field].addClass("is-autofilled");
+		}
 	    }
+	} else {
+	    this.elements.expirydate.setAttributes({value: ""});
 	}
-	}	
     }
 
     cancelAutofill() {
