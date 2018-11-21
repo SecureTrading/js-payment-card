@@ -187,3 +187,35 @@ div.st-ASTROPAYCARD .st-card-side #st-payment-logo {
     left: 0;
     width: 100%;
 }
+
+@keyframes autofillstart {
+    from { /* empty animation */ }
+    to { /* empty animation */ }
+}
+
+@keyframes autofillcancel {
+    from { /* empty animation */ }
+    to { /* empty animation */ }
+}
+
+:-webkit-autofill {
+    animation: autofillstart 1s linear 0s infinite;
+}
+:not(:-webkit-autofill) {
+    animation: autofillcancel 1s linear 0s infinite;
+}
+
+.is-autofilled {
+    background-color: rgb(250, 255, 189) !important;
+    background-image: none !important;
+    color: rgb(0, 0, 0) !important;
+}
+
+.autofill-input {
+    opacity: 0;
+    pointer-events: none;
+    height: 2px;
+    width: 2px;
+    position: absolute;
+    top: -2px;
+}

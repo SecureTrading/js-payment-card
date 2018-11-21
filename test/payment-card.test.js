@@ -93,12 +93,18 @@ test("PaymentCard.setDomElements",
 	 expect(pc.elements.securitycode).toMatchObject({name: "securitycode"}); // WARNING: toMatchObject only tests the keys in the expected are a subset of the actual - to test against {} we MUST use toEqual
 	 expect(pc.elements.nameoncard).toMatchObject({name: "nameoncard"}); // WARNING: toMatchObject only tests the keys in the expected are a subset of the actual - to test against {} we MUST use toEqual
 
+	 // Check the autofills
+	 expect(pc.autofillElements.expirymonth.getAttribute("autocomplete")).toBe("cc-exp-month");
+	 expect(pc.autofillElements.expiryyear.getAttribute("autocomplete")).toBe("cc-exp-year");
+	 expect(pc.elements.pan.getAttribute("autocomplete")).toBe("cc-number");
+
 	 // Check the overlays
 	 expect(pc.overlays.pan.getAttribute("id")).toBe("st-pan-overlay");
 	 expect(pc.overlays.pan.element.tagName).toBe("DIV");
 	 expect(pc.overlays.expirydate.getAttribute("id")).toBe("st-expirydate-overlay");
 	 expect(pc.overlays.securitycode.getAttribute("id")).toBe("st-securitycode-overlay");
 	 expect(pc.overlays.nameoncard.getAttribute("id")).toBe("st-nameoncard-overlay");
+
 
 	 // Check other elements we cache
 	 expect(pc.cardElement.getAttribute("id")).toBe("st-card");
@@ -109,6 +115,48 @@ test("PaymentCard.setDomElements",
 
 	 expect(pc.logoImg.getAttribute("id")).toBe("st-payment-logo");
 	 expect(pc.logoImg.element.tagName).toBe("IMG");
+     });
+
+test("PaymentCard.setAutocomplete", 
+     () => {
+	 const pc = new PaymentCard.Card({init: false});
+	 pc.template = realTemplate;
+	 pc.createCard();
+	 pc.setDomElements();
+
+	 pc.setAutocomplete();
+	 expect(pc.elements.pan.getAttribute("autocomplete")).toBe("cc-number");
+	 expect(pc.elements.expirydate.getAttribute("autocomplete")).toBe("cc-exp");
+	 expect(pc.elements.securitycode.getAttribute("autocomplete")).toBe("cc-csc");
+	 expect(pc.elements.nameoncard.getAttribute("autocomplete")).toBe("cc-name");
+	 expect(pc.elements.nameoncard.getAttribute("tabindex")).toBe("0");
+     });
+
+test("PaymentCard.addAutofillElement", 
+     () => {
+	 const pc = new PaymentCard.Card({init: false});
+	 pc.template = realTemplate;
+	 pc.createCard();
+	 pc.setDomElements();
+
+	 pc.autofillElements = {};
+	 pc.addAutofillElement("bob", "cc-exp-month", pc.elements.pan.getParent());
+	 expect(pc.autofillElements["bob"].getAttribute("type")).toBe("number");
+	 expect(pc.autofillElements["bob"].getAttribute("autocomplete")).toBe("cc-exp-month");
+	 expect(pc.autofillElements["bob"].getAttribute("class")).toBe("autofill-input");
+
+	 expect(pc.elements.pan.getParent().lastChild).toBe(pc.autofillElements["bob"].element);
+
+	 pc.addAutofillElement("steve", "anything", pc.elements.pan.getParent());
+	 expect(pc.autofillElements["bob"].getAttribute("type")).toBe("number");
+	 expect(pc.autofillElements["bob"].getAttribute("autocomplete")).toBe("cc-exp-month");
+	 expect(pc.autofillElements["bob"].getAttribute("class")).toBe("autofill-input");
+	 expect(pc.autofillElements["bob"].getAttribute("tabindex")).toBe("-1");
+	 expect(pc.autofillElements["steve"].getAttribute("type")).toBe("number");
+	 expect(pc.autofillElements["steve"].getAttribute("autocomplete")).toBe("anything");
+	 expect(pc.autofillElements["steve"].getAttribute("class")).toBe("autofill-input");
+
+	 expect(pc.elements.pan.getParent().lastChild).toBe(pc.autofillElements["steve"].element);
      });
 
 test("PaymentCard.getMaxEntryLimits", 
@@ -126,7 +174,7 @@ test("PaymentCard.setEventListeners",
 	 pc.createCard();
 	 pc.setDomElements();
 
-	 const expectAddCalls = {"pan": 4,
+	 const expectAddCalls = {"pan": 6,
 				 "expirydate": 4,
 				 "nameoncard": 3,
 				 "securitycode": 6,
@@ -136,6 +184,7 @@ test("PaymentCard.setEventListeners",
 			       "restrictNumerical": 3,
 			       "focusSecurityCode": 1,
 			       "blurSecurityCode": 1,
+			       "onAutofill": 3,
 			      }
 
 	 for (let element in expectAddCalls) {
@@ -168,6 +217,80 @@ test("PaymentCard.setEventListeners",
 	     }
 	 }
 });
+each([[{animationName: "unknown"}, 0, 0],
+      [{animationName: "autofillstart"}, 1, 0],
+      [{type: "blur"}, 1, 0],
+      [{type: "other"}, 0, 0],
+      [{animationName: "autofillcancel"}, 0, 1],
+      [{animationName: "autofillcancel", type: "other"}, 0, 1],
+      [{animationName: "autofillcancel", type: "blur"}, 1, 0],
+      ]
+    ).test("PaymentCard.onAutofill", 
+	   (event, expAutofill, expCancelAutofill) => {
+	       const e = event;
+	       const pc = new PaymentCard.Card({init: false});
+	       pc.autofillExpiry = jest.fn();
+	       pc.cancelAutofill = jest.fn();
+	       pc.template = realTemplate;
+	       pc.createCard();
+	       pc.onAutofill(e)
+	       setTimeout(function(){
+		   expect(pc.autofillExpiry).toHaveBeenCalledTimes(expAutofill);
+		   expect(pc.cancelAutofill).toHaveBeenCalledTimes(expCancelAutofill);
+	       }, 60); // Have to wait for after the autofillExpiry might have been called
+
+	   });
+
+test("PaymentCard.autofillExpiry",
+     () => {
+	 const pc = new PaymentCard.Card({init: false});
+	 pc.createCard();
+	 pc.setDomElements();
+	 pc.updateOverlay = jest.fn();
+	 try {
+	     expect(pc.elements.expirydate.getAttribute("value")).toBe("");
+	     pc.autofillExpiry();
+
+	     expect(pc.updateOverlay).toHaveBeenCalledTimes(0);
+	     expect(pc.elements.expirydate.getAttribute("value")).toBe("");
+	     
+	     pc.autofillElements.expirymonth.setAttributes({"value": "12"})
+	     pc.autofillElements.expiryyear.setAttributes({"value": "2022"})
+	     
+	     pc.autofillSelector = "input[name=pan]";   
+	     expect(pc.elements.pan.getAttribute("class")).toBe(null);
+
+	     pc.autofillExpiry();
+
+	     expect(pc.elements.pan.getAttribute("class")).toBe("is-autofilled");
+	     expect(pc.elements.expirydate.getAttribute("class")).toBe("is-autofilled");
+	     expect(pc.elements.securitycode.getAttribute("class")).toBe(null); // This isn't the expirydate or the one identified by the selector
+
+	     expect(pc.elements.expirydate.getAttribute("value")).toBe("12/2022");
+
+	 } finally { // Reset the dom after this test as it modifies it too much for other tests to cope with
+	     const { document, CustomEvent} = (new JSDOM(defaultHtml)).window;
+	     global.document = document;
+	 }
+     });
+
+test("PaymentCard.cancelAutofill",
+     () => {
+	 const pc = new PaymentCard.Card({init: false});
+	 pc.createCard();
+	 pc.setDomElements();
+	 pc.elements.pan.addClass("is-autofilled")
+	 pc.elements.nameoncard.addClass("is-autofilled")
+	 pc.elements.nameoncard.addClass("another")
+	 expect(pc.elements.pan.getAttribute("class")).toBe("is-autofilled");
+	 expect(pc.elements.nameoncard.getAttribute("class")).toBe("is-autofilled another");
+	 expect(pc.elements.expirydate.getAttribute("class")).toBe(null);
+	 pc.cancelAutofill();
+	 expect(pc.elements.pan.getAttribute("class")).toBe("");
+	 expect(pc.elements.nameoncard.getAttribute("class")).toBe("another");
+	 expect(pc.elements.expirydate.getAttribute("class")).toBe(null);
+     });
+     
 
 each([["pan", "4111", "4111", 1],
       ["pan", "41112222", "41112222", 1],// Not up to this function to format content (this is done by Payment.format functions)

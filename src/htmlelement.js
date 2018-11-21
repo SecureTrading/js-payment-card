@@ -101,6 +101,20 @@ export class HtmlElement {
 	}
 	this.element.innerHTML = html;
     }
+
+    matches(selector) {
+	var matches = ( this.element.matches || this.element.msMatchesSelector );
+	try {
+	    return matches.call(this.element, selector);
+	} catch (error) { // If the browser considers the selector string as invalid it can raise, but different browsers may consider different selectors as valid
+	    return false;
+	}
+    }
+
+    getParent() {
+	return this.element.parentNode;
+    }
+
 }
 
 export function escapeHtml(value) {
