@@ -215,7 +215,8 @@ div.st-ASTROPAYCARD .st-card-side #st-payment-logo {
     opacity: 0;
     pointer-events: none;
     height: 2px;
-    width: 2px;
+    width: 2px !important;
     position: absolute;
     top: -2px;
+    left: -20px;
 }
