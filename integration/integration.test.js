@@ -7,9 +7,9 @@ function getBrowsersToTest() {
     const browsers = {CHROME: ["Chrome", "68.0", "Windows", "10"],
 		      FIREFOX: ["Firefox", "61.0", "Windows", "10"],
 		      EDGE: ["Edge", "17.0", "Windows", "10"],
-		      IE_A: ["IE", "11.0", "Windows", "10"],
-		      IE_B: ["IE", "10.0", "Windows", "8"],
-		      IE_C: ["IE", "9.0", "Windows", "7"],
+		      IE_11: ["IE", "11.0", "Windows", "10"],
+		      IE_10: ["IE", "10.0", "Windows", "8"],
+		      IE_9: ["IE", "9.0", "Windows", "7"],
 		      SAFARI: ["Safari", "11.0", "OS X", "High Sierra"],
 		      };
     if (process.env.BROWSERS) {
