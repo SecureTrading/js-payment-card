@@ -2,6 +2,28 @@ import each from 'jest-each';
 var wd = require("selenium-webdriver");
 const chalk = require("chalk");
 
+function getBrowsersToTest() {
+    let result = [];
+    const browsers = {CHROME: ["Chrome", "68.0", "Windows", "10"],
+		      FIREFOX: ["Firefox", "61.0", "Windows", "10"],
+		      EDGE: ["Edge", "17.0", "Windows", "10"],
+		      IE_A: ["IE", "11.0", "Windows", "10"],
+		      IE_B: ["IE", "10.0", "Windows", "8"],
+		      IE_C: ["IE", "9.0", "Windows", "7"],
+		      SAFARI: ["Safari", "11.0", "OS X", "High Sierra"],
+		      };
+    if (process.env.BROWSERS) {
+	for (const browser of process.env.BROWSERS.split(" ")) {
+	    if (browser in browsers) {
+		result.push(browsers[browser]);
+	    }
+	}
+    } else {
+	    result = Object.values(browsers);
+    }
+    return result;
+}
+
 function getCapabilities(browser, browserVersion, os, osVersion) {
     var capabilities = {
 	'browserName' : browser,
@@ -81,14 +103,7 @@ async function test1(driver) {
 
 jest.setTimeout(120000);// 120secs
 
-each([["Chrome", "68.0", "Windows", "10"],
-      ["Firefox", "61.0", "Windows", "10"],
-      ["Edge", "17.0", "Windows", "10"],
-      ["IE", "11.0", "Windows", "10"],
-      ["IE", "10.0", "Windows", "8"],
-      ["IE", "9.0", "Windows", "7"],
-      ["Safari", "11.0", "OS X", "High Sierra"],
-     ]
+each(getBrowsersToTest()
     ).test('integration',
 	   (browser, browserVersion, os, osVersion) => {
 	       return runTests(browser, browserVersion, os, osVersion, [test1]);

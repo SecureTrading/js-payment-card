@@ -15,8 +15,14 @@ jobs:
     - stage: "Test"
       name: "Unit tests"
       script: npm test && cat ./coverage/lcov.info | coveralls
-    - script: npm run server && npm run integration
-      name: "Integration tests"
+    - name: "Integration tests IE"
+      env:
+        - BROWSERS = "IE_A IE_B IE_C"
+      script: npm run server && npm run integration
+    - name: "Integration tests chrome"
+      env:
+        - BROWSERS = "CHROME"
+      script: npm run server && npm run integration
 after_script:
 - greenkeeper-lockfile-upload
 addons:
