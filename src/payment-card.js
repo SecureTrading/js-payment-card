@@ -209,6 +209,14 @@ export class Card extends EventTarget {
 	if (value.length > limit) {
 	    value = value.substring(0, limit) + (this.displayCutoff[type] || "");
 	}
+	if (type === "pan") {
+	    const centerClass = "st-card-centered";
+	    if (this.shouldCenter(value)) {
+		this.container.addClass(centerClass);
+	    } else {
+		this.container.removeClass(centerClass);
+	    }
+	}
 	this.overlays[type].setHtml(value);
 	if (type === "securitycode") {
 	    if (value === this.placeholders["securitycode"]) {
@@ -218,8 +226,7 @@ export class Card extends EventTarget {
 	}
     }
 
-    shouldCenter() {
-	let value = this.elements.pan.getAttribute("value");
+    shouldCenter(value) {
     	if (value.length >= 20) {
     	    return true;
     	}
@@ -249,13 +256,6 @@ export class Card extends EventTarget {
 	    }
 	    else {
 		this.container.removeClass(hideFrontClass);
-	    }
-
-	    let centerClass = "st-card-centered";
-	    if (this.shouldCenter()) {
-		this.container.addClass(centerClass);
-	    } else {
-		this.container.removeClass(centerClass);
 	    }
 	    this.dispatchEvent(new ChangeCardTypeEvent(newDetails, oldDetails));
 	}

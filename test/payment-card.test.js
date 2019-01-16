@@ -334,26 +334,28 @@ each([["pan", "4111", "4111", 1],
 	       expect(pc.formatInput).toHaveBeenCalledTimes(1);
 	   });
 
-each([["securitycode", "", "", ""],
-      ["securitycode", "\u2219\u2219\u2219", "\u2219\u2219\u2219", "\u2219\u2219\u2219\u2219"],
-      ["securitycode", "hello world", "hello world", "hello world"],
-      ["pan", "", "", ""],
-      ["pan", "\u2219\u2219\u2219", "\u2219\u2219\u2219", ""],
-      ["pan", "hello world", "hello world", ""],
-      ["pan", "55555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555", "5555555555555555555555", ""], // an unrealistic length with no limit
-      ["nameoncard", "Hey there Delilah, what's it like in new york city?", "Hey there Delil\u2026", ""], // cutoff limit
-      ["nameoncard", "Hey there Delil", "Hey there Delil", ""], // no cutoff char if not limited
-      ["expirydate", "12 / 3456", "12 / 3456", ""],
-      ["expirydate", "12345 / 67890", "12345 / 6", ""], // cutoff with no cuttof char
+each([["securitycode", "", "", false, ""],
+      ["securitycode", "\u2219\u2219\u2219", "\u2219\u2219\u2219", false, "\u2219\u2219\u2219\u2219"],
+      ["securitycode", "hello world", "hello world", false, "hello world"],
+      ["pan", "", "", false, ""],
+      ["pan", "\u2219\u2219\u2219", "\u2219\u2219\u2219", false, ""],
+      ["pan", "hello world", "hello world", false, ""],
+      ["pan", "55555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555", "5555555555555555555555", true, ""], // an unrealistic length with no limit
+      ["nameoncard", "Hey there Delilah, what's it like in new york city?", "Hey there Delil\u2026", false, ""], // cutoff limit
+      ["nameoncard", "Hey there Delil", "Hey there Delil", false, ""], // no cutoff char if not limited
+      ["expirydate", "12 / 3456", "12 / 3456", false, ""],
+      ["expirydate", "12345 / 67890", "12345 / 6", false, ""], // cutoff with no cuttof char
      ]).test("PaymentCard.setOverlay",
-	     (field, set, expected, fscExpected) => {
+	     (field, set, expected, expectCenter, fscExpected) => {
 		 const pc = new PaymentCard.Card({init: false});
 		 pc.template = realTemplate;
 		 pc.createCard();
+		 pc.container.removeClass("st-card-centered")// so we have a standard baseline for all cases (else it doesn't reset when we test fields that shouldn't change it)
 		 pc.setDomElements();
 		 
 		 pc.setOverlay(field, set);
 		 expect(pc.overlays[field].element.innerHTML).toBe(expected);
+		 expect(pc.container._hasClass("st-card-centered")).toBe(expectCenter);
 		 expect(pc.overlays["frontsecuritycode"].element.innerHTML).toBe(fscExpected);// Just make sure this isn't changed for the pan
 	     });
 
@@ -371,10 +373,7 @@ each([["", false],
 .test("PaymentCard.shouldCenter", 
      (value, expected) => {
 	 const pc = new PaymentCard.Card({init: false});
-	 pc.createCard();
-	 pc.setDomElements();
-	 pc.elements.pan.setAttributes({"value": value})
-	 expect(pc.shouldCenter()).toBe(expected);
+	 expect(pc.shouldCenter(value)).toBe(expected);
      });
 
 each([[{}, "", null, "", "st-hide-front-securitycode"],
