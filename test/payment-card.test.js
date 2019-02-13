@@ -237,7 +237,7 @@ each([[{animationName: "unknown"}, 0, 0],
 	       setTimeout(function(){
 		   expect(pc.autofillExpiry).toHaveBeenCalledTimes(expAutofill);
 		   expect(pc.cancelAutofill).toHaveBeenCalledTimes(expCancelAutofill);
-	       }, 60); // Have to wait for after the autofillExpiry might have been called
+	       }, 80); // Have to wait for after the autofillExpiry might have been called
 
 	   });
 
