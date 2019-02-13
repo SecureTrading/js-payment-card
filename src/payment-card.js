@@ -163,7 +163,8 @@ export class Card extends EventTarget {
 	
     onAutofill(e) {
 	if (e.animationName == "autofillstart" || e.type == "blur") {
-	    setTimeout(this.autofillExpiry.bind(this), 50); // Have to set the timeout so that we wait for the field to be populated
+		// Have to set the timeout so that we wait for the field to be populated
+	    setTimeout(this.autofillExpiry.bind(this), 50);
 	} else if (e.animationName == "autofillcancel") {
 	    this.cancelAutofill();
 	}
