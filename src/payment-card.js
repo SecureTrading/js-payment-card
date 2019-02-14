@@ -1,4 +1,3 @@
-import "@babel/polyfill";
 import styles from "./styles.css"; // eslint-disable-line no-unused-vars
 import template from "./template.html";
 import chipLogo from "./images/chip.png";
