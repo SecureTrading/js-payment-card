@@ -25,7 +25,9 @@
     "url": "https://github.com/SecureTrading/js-payment-card/issues"
   },
   "homepage": "https://github.com/SecureTrading/js-payment-card#readme",
-  "dependencies": {},
+  "dependencies": {
+    "@babel/polyfill": "^7.2.5"
+  },
   "devDependencies": {
     "@babel/core": "^7.2.2",
     "@babel/plugin-transform-modules-commonjs": "^7.2.0",
