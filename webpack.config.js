@@ -1,7 +1,7 @@
 module.exports = {
     mode: "production",
     entry: {
-	bundle: "./src/payment-card.js"
+	bundle: ["@babel/polyfill","./src/payment-card.js"]
     },
     output: {
         filename: "payment-card.js",
