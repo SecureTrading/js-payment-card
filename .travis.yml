@@ -4,6 +4,7 @@ node_js:
 before_install:
 - npm install -g npm@latest
 install:
+- npm config set package-lock false
 - npm install
 jobs:
   include:
