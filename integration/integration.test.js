@@ -1,4 +1,3 @@
-import "@babel/polyfill";
 var wd = require("selenium-webdriver");
 const chalk = require("chalk");
 
