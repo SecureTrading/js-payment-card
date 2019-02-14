@@ -1,3 +1,4 @@
+import "@babel/polyfill";
 import each from "jest-each";
 var wd = require("selenium-webdriver");
 const chalk = require("chalk");
