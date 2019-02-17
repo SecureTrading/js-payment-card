@@ -36,7 +36,7 @@ function getCapabilities(browser, browserVersion, os, osVersion) {
 	'resolution' : '1024x768',
 	'browserstack.local' : true,
     'browserstack.localIdentifier' : process.env.BROWSERSTACK_LOCAL_IDENTIFIER,
-    'browserstack.appium_version' : '1.9.1'
+    'browserstack.selenium_version' : '3.14.0'
     }
     return capabilities;
 }
