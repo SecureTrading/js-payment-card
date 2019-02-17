@@ -35,7 +35,8 @@ function getCapabilities(browser, browserVersion, os, osVersion) {
 	'build': process.env.TRAVIS_BUILD_NUMBER,
 	'resolution' : '1024x768',
 	'browserstack.local' : true,
-	'browserstack.localIdentifier' : process.env.BROWSERSTACK_LOCAL_IDENTIFIER
+    'browserstack.localIdentifier' : process.env.BROWSERSTACK_LOCAL_IDENTIFIER,
+    'browserstack.appium_version' : '1.9.1'
     }
     return capabilities;
 }
