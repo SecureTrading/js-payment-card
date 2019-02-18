@@ -79,8 +79,7 @@ async function checkOverlay(driver, name, expected) {
 
 async function sendKeysAndCheckOverlay(driver, name, toSend, expected) {
     var input = await driver.findElement(wd.By.name(name));
-    console.log("Send keys"+toSend);
-    console.log("Send keys"+(typeof toSend));
+    console.log("Sending keys: '" + toSend + "' in field: '" + name + "'");
     await input.sendKeys(toSend);
     var overlay = await getOverlay(driver, name);
     await driver.wait(wd.until.elementTextIs(overlay, expected), 20000);
