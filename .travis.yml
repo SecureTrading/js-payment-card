@@ -10,28 +10,30 @@ jobs:
   include:
   - stage: Test
     name: Unit tests
-    script: npm test && cat ./coverage/lcov.info | coveralls
+    script: npm test
   - name: 'Integration tests: chrome'
     env: BROWSERS="CHROME"
-    script: npm run start && npm run integration
+    script: npm run startintegration
   - name: 'Integration tests: firefox'
     env: BROWSERS="FIREFOX"
-    script: npm run start && npm run integration
+    script: npm run startintegration
   - name: 'Integration tests: edge'
     env: BROWSERS="EDGE"
-    script: npm run start && npm run integration
+    script: npm run startintegration
   - name: 'Integration tests: IE11'
     env: BROWSERS="IE_11"
-    script: npm run start && npm run integration
+    script: npm run startintegration
   - name: 'Integration tests: IE10'
     env: BROWSERS="IE_10"
-    script: npm run start && npm run integration
+    script: npm run startintegration
   - name: 'Integration tests: IE9'
     env: BROWSERS="IE_9"
-    script: npm run start && npm run integration
+    script: npm run startintegration
   - name: 'Integration tests: safari'
     env: BROWSERS="SAFARI"
-    script: npm run start && npm run integration
+    script: npm run startintegration
+after_success:
+- cat ./coverage/lcov.info | coveralls
 addons:
   browserstack:
     forcelocal: true

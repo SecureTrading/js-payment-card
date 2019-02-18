@@ -35,8 +35,7 @@ function getCapabilities(browser, browserVersion, os, osVersion) {
 	'build': process.env.TRAVIS_BUILD_NUMBER,
 	'resolution' : '1024x768',
 	'browserstack.local' : true,
-    'browserstack.localIdentifier' : process.env.BROWSERSTACK_LOCAL_IDENTIFIER,
-    'browserstack.selenium_version' : '3.10.0'
+    'browserstack.localIdentifier' : process.env.BROWSERSTACK_LOCAL_IDENTIFIER
     }
     return capabilities;
 }
@@ -80,6 +79,7 @@ async function checkOverlay(driver, name, expected) {
 
 async function sendKeysAndCheckOverlay(driver, name, toSend, expected) {
     var input = await driver.findElement(wd.By.name(name));
+    console.log("Sending keys: '" + toSend + "' in field: '" + name + "'");
     await input.sendKeys(toSend);
     var overlay = await getOverlay(driver, name);
     await driver.wait(wd.until.elementTextIs(overlay, expected), 20000);

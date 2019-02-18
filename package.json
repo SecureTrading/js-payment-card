@@ -14,7 +14,8 @@
     "test": "npm run lint && npm run jest && npm run snyk",
     "jest": "jest test --testPathIgnorePatterns=\"integration/\" --coverage",
     "start": "http-server ./ &",
-    "integration": "jest integration --detectOpenHandles"
+    "integration": "jest integration --detectOpenHandles",
+    "startintegration": "npm run start && npm run integration"
   },
   "repository": {
     "type": "git",
