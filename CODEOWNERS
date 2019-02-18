@@ -2,5 +2,5 @@
 *   @james-simpson-ST
 
 # Dependabot auto merge pull requests 
-package.json    @dependabot
-package-lock.json   @dependabot
+package.json    @dependabot-bot
+package-lock.json   @dependabot-bot
