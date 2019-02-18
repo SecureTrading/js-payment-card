@@ -1,5 +1,0 @@
-# Global owners
-*   @james-simpson-ST
-
-# Dependabot auto merge pull requests 
-package*.json   @dependabot-bot
