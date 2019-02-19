@@ -37,6 +37,7 @@ jobs:
     script: echo "Deploying to npm ..."
     deploy:
       provider: npm
+      email: $NPM_USER
       api_key: $NPM_TOKEN
       on:
         tags: true
