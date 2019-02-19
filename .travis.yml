@@ -33,6 +33,14 @@ jobs:
   - name: 'Integration tests: safari'
     env: BROWSERS="SAFARI"
     script: npm run startintegration
+  - stage: Deploy
+    deploy:
+      provider: npm
+        email: $NPM_USER
+        api_key: $NPM_TOKEN
+      on:
+        tags: true
+        repo: SecureTrading/js-payment-card
 after_success:
 - cat ./coverage/lcov.info | coveralls
 addons:
@@ -45,11 +53,3 @@ addons:
 env:
   global:
     secure: qi+wztUVO1oHzpadU2SFC1rS6hgMIjGFtiM88wxrvH7pPqreCH3ALVYNdnnWzoZ573CpQc6eFvJ/AtpMUBtyuutCrPFoONEv/1OFnldQlS25TKxLrViC15cx4lstSd9qJxyA8uHYXKedb80X1W7PKgIVW9ETGX2zUIWArz0Z+OhcCsEwQcR3qvAwuTl1K1cM9XMEbLM4pay9aRcNimD3HePvEGgCzrXoiZFoLRW7tL+yNqoDRSMXfb4Q5DZq+ZiIJzRCx5fHRbp6290pudJGWu8sa9XJAP1CP/jXp8R/5OFG0oIRzsgmCRGzdM//vQuCw3dcxj67xvXMCVhLbLEMww5TFyPNVpS2G0X/x1vuOB61PGBTom7EO1XT7QdV+kXHOSmi6uSJw4MVRLj8A2pQ85aKzK1hpgxEDIIG7C1rI+Re9RpBD6/BmsaFAZeeXpXwXqKD7DsRIuKhtpnsw2vptinrWcN1SANv8J3wNb+ce/1JY0EfPb0jUD96EIKuFD35uFxC5fIp9xmwaENERbxcm6rQz1liyk6VdNZu1qMedJzi0zoq7L/wTuPQQaea5rWXHiom+KLL+eQu0W797UJhcQlzN6HYiDQe+kWoGVE/TEpvf9Z2mUM7ZHr1LdhoHRoVyAURsvlmW6PhYUMMOVcv/3kJtSOt+/3gJpGpZc/OQYs=
-deploy:
-  provider: npm
-  email: james.simpson@securetrading.com
-  api_key:
-    secure: Xqx/CKPjYTEVPUJquFMuvU3t/XJu8Bm+cz9g/2D28Sr1ctM8CMSH7raGM+XYuC9kuUS2kMA9wljBvqoVEzHYSSe+GjaAZFxCTumLiQ5lPYVGh2uJa3nOvUmpJWgZgyJKOs9vy9F4ENsbrRQ2fLW5M0YdFiOSjbWNVPFpr/8hvNoV6ANiGA5kk3wREmE4RWMF+M/hW+TkYbTG3P/wf8hYK595K4ZknazFZW4vJA2Wr/wUJ3cwxHRgTxOp1jg3eac8u/fXegthkyV1PBNw+6EhfSZw8hShRylvoAB1zdEkS1Xy/bQVv+YUXf4/83hqQMS/L23xUfFuQ+GqfgxwX0Q7xXq6vmR277IQA6Vn41A7pJAsRIyAyfQNy5rZRF4BS5YGl9xyC2V5chZi44+WUM77erZ3Fe94JwJ4HzdmsZqReGijZVokw4lEtZXTF623Z6IodV6db4E4c6CPx0oG6JGeSbMYY9luB5hk1Is8jIXKljVf5p5e05lu4i8CgFqXImW9A9C065eR80NIctve3hlyTAw3d2PD1aXl3RG56Fdus/taUaZSUdh5rziihN2kjTbld5M0uflnaQYVN/Iz4PHiVkQjWl9ErFnDbZRUF9hTBXTvRki+OQFiL4VGSdDacyhJ6jV26tvTFY5UpJgnU6jsEW0yBZuZteRYA6Fzf6w3IHI=
-  on:
-    tags: true
-    repo: SecureTrading/js-payment-card
