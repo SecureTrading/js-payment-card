@@ -5,13 +5,13 @@ const chalk = require("chalk");
 
 function getBrowsersToTest() {
     let result = [];
-    const browsers = {CHROME: ["Chrome", "68.0", "Windows", "10"],
-		      FIREFOX: ["Firefox", "61.0", "Windows", "10"],
-		      EDGE: ["Edge", "17.0", "Windows", "10"],
+    const browsers = {CHROME: ["Chrome", "72.0", "Windows", "10"],
+		      FIREFOX: ["Firefox", "65.0", "Windows", "10"],
+		      EDGE: ["Edge", "18.0", "Windows", "10"],
 		      IE_11: ["IE", "11.0", "Windows", "10"],
 		      IE_10: ["IE", "10.0", "Windows", "8"],
 		      IE_9: ["IE", "9.0", "Windows", "7"],
-		      SAFARI: ["Safari", "11.0", "OS X", "High Sierra"],
+		      SAFARI: ["Safari", "12.0", "OS X", "Mojave"],
 		      };
     if (process.env.BROWSERS) {
 	for (const browser of process.env.BROWSERS.split(" ")) {
@@ -35,7 +35,7 @@ function getCapabilities(browser, browserVersion, os, osVersion) {
 	'build': process.env.TRAVIS_BUILD_NUMBER,
 	'resolution' : '1024x768',
 	'browserstack.local' : true,
-	'browserstack.localIdentifier' : process.env.BROWSERSTACK_LOCAL_IDENTIFIER
+    'browserstack.localIdentifier' : process.env.BROWSERSTACK_LOCAL_IDENTIFIER
     }
     return capabilities;
 }
@@ -79,6 +79,7 @@ async function checkOverlay(driver, name, expected) {
 
 async function sendKeysAndCheckOverlay(driver, name, toSend, expected) {
     var input = await driver.findElement(wd.By.name(name));
+    console.log("Sending keys: '" + toSend + "' in field: '" + name + "'");
     await input.sendKeys(toSend);
     var overlay = await getOverlay(driver, name);
     await driver.wait(wd.until.elementTextIs(overlay, expected), 20000);
