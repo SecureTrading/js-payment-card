@@ -37,7 +37,7 @@ jobs:
     script: echo "Deploying to npm ..."
     deploy:
       provider: npm
-        api_key: $NPM_TOKEN
+      api_key: $NPM_TOKEN
       on:
         tags: true
         repo: SecureTrading/js-payment-card
