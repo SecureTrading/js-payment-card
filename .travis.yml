@@ -34,6 +34,8 @@ jobs:
     env: BROWSERS="SAFARI"
     script: npm run startintegration
   - stage: Deploy
+    name: deploy
+    script: echo "Deploying to npm ..."
     deploy:
       provider: npm
         email: $NPM_USER
