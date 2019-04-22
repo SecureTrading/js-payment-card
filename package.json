@@ -45,7 +45,7 @@
     "jest": "^24.7.1",
     "jest-cli": "^24.7.1",
     "jest-each": "^24.7.1",
-    "jsdom": "^14.0.0",
+    "jsdom": "^15.0.0",
     "selenium-webdriver": "^4.0.0-alpha.1",
     "snyk": "^1.150.0",
     "style-loader": "^0.23.1",
