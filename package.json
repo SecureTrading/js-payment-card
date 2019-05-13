@@ -34,7 +34,7 @@
     "@babel/polyfill": "^7.4.4",
     "@babel/preset-env": "^7.4.3",
     "babel-jest": "^24.8.0",
-    "babel-loader": "^8.0.5",
+    "babel-loader": "^8.0.6",
     "chalk": "^2.4.2",
     "coveralls": "^3.0.3",
     "css-loader": "^2.1.1",
