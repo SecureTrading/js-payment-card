@@ -47,7 +47,7 @@
     "jest-each": "^24.8.0",
     "jsdom": "^15.1.0",
     "selenium-webdriver": "^4.0.0-alpha.1",
-    "snyk": "^1.163.3",
+    "snyk": "^1.165.1",
     "style-loader": "^0.23.1",
     "stylelint": "^10.0.1",
     "stylelint-config-standard": "^18.3.0",
