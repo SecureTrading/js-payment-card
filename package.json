@@ -8,7 +8,7 @@
     "debug": "webpack --mode=none",
     "fixlint": "./node_modules/.bin/eslint ./src/*.js --fix",
     "postinstall": "snyk protect",
-    "snyk": "snyk monitor --dev --org=secure-trading",
+    "snyk": "snyk test --org=secure-trading",
     "lint": "npm run eslint && npm run stylelint",
     "eslint": "./node_modules/.bin/eslint ./src/*.js",
     "stylelint": "./node_modules/.bin/stylelint ./src/*.css",
