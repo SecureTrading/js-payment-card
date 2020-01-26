@@ -11,6 +11,7 @@ import maestroLogo from "./images/MAESTRO-S.png";
 import mastercardLogo from "./images/MASTERCARD-S.png";
 import pibaLogo from "./images/PIBA-S.png";
 import visaLogo from "./images/VISA-S.png";
+import { PaymentsUtils } from "@securetrading/js-payments-utils";
 
 import {
 	EventTarget
@@ -25,9 +26,6 @@ import {
 	inArray,
 	stripChars
 } from "./utils";
-import {
-	BinLookup
-} from "./binlookup";
 
 export class Card extends EventTarget {
 	constructor(config) {
@@ -101,7 +99,7 @@ export class Card extends EventTarget {
 
 	setConfig() {
 		this.config.init = "init" in this.config ? this.config.init : true;
-		this.binLookup = new BinLookup(this.config);
+		this.iinLookup = new PaymentsUtils.IINLookup(this.config);
 		if ("listeners" in this.config) {
 			const listeners = this.config.listeners;
 			for (let eventType in listeners) {
@@ -174,7 +172,7 @@ export class Card extends EventTarget {
 	getMaxEntryLimits() {
 		const panLimits = [];
 		const cvcLimits = [];
-		this.binLookup.forEachBreakCardTypes((card) => {
+		this.iinLookup.forEachBreakBrands((card) => {
 			panLimits.push(...card["length"]);
 			cvcLimits.push(...card["cvcLength"]);
 		});
@@ -278,7 +276,7 @@ export class Card extends EventTarget {
 
 	updatePan() {
 		const value = stripChars(this.elements.pan.getAttribute("value"));
-		const newDetails = this.binLookup.binLookup(value);
+		const newDetails = this.iinLookup.lookup(value);
 		const cardType = newDetails.type;
 		if (newDetails !== this.cardDetails) {
 			this.container.removeClass("st-" + this.cardDetails.type);
