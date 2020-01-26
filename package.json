@@ -1,6 +1,6 @@
 {
   "name": "@securetrading/js-payment-card",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "JavaScript Payment card",
   "main": "<rootDir>/src/payment-card.js",
   "scripts": {
@@ -28,7 +28,9 @@
     "url": "https://github.com/SecureTrading/js-payment-card/issues"
   },
   "homepage": "https://github.com/SecureTrading/js-payment-card#readme",
-  "dependencies": {},
+  "dependencies": {
+    "@securetrading/js-payments-utils": "0.0.6"
+  },
   "devDependencies": {
     "@babel/core": "^7.8.3",
     "@babel/plugin-transform-modules-commonjs": "^7.8.3",
