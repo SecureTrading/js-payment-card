@@ -1,6 +1,7 @@
 const jsdom = require("jsdom");
 import each from 'jest-each';
 const { JSDOM } = jsdom;
+import { PaymentsUtils } from "@securetrading/js-payments-utils";
 const defaultHtml = `<!DOCTYPE html><body><p>Hello world</p><div id="st-card-outer-container"></div><form><input name="pan" /><input name="expirydate" /><input name="securitycode" /><input name="nameoncard" /></form></body></html>`;
 const { document, CustomEvent} = (new JSDOM(defaultHtml)).window;
 global.document = document;
@@ -410,7 +411,7 @@ each([[{}, "", null, "", "st-hide-front-securitycode"],
 	 expect(pc.dispatchEvent).toHaveBeenCalledTimes(1);
 	 const expEvent = new CustomEvent("changeCardType", {});
 	 expEvent.cardType = {old: {type: "oldcardtype"},
-			      new: pc.binLookup.getCard(expectedCardType) || {type: null},
+			      new: PaymentsUtils.iinLookup.getCard(expectedCardType) || {type: null},
 			      }
 	 expect(pc.dispatchEvent).toHaveBeenCalledWith(expEvent);
      });
