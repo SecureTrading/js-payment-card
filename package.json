@@ -1,6 +1,6 @@
 {
   "name": "@securetrading/js-payment-card",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "JavaScript Payment card",
   "main": "<rootDir>/src/payment-card.js",
   "scripts": {
