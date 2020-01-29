@@ -1,6 +1,6 @@
 {
   "name": "@securetrading/js-payment-card",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "JavaScript Payment card",
   "main": "<rootDir>/src/payment-card.js",
   "scripts": {
@@ -29,7 +29,7 @@
   },
   "homepage": "https://github.com/SecureTrading/js-payment-card#readme",
   "dependencies": {
-    "@securetrading/js-payments-utils": "0.0.6"
+    "@securetrading/ts-iin-lookup": "^0.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.8.3",

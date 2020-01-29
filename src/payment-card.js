@@ -11,7 +11,7 @@ import maestroLogo from "./images/MAESTRO-S.png";
 import mastercardLogo from "./images/MASTERCARD-S.png";
 import pibaLogo from "./images/PIBA-S.png";
 import visaLogo from "./images/VISA-S.png";
-import { PaymentsUtils } from "@securetrading/js-payments-utils";
+import { IinLookup } from "@securetrading/ts-iin-lookup";
 
 import {
 	EventTarget
@@ -99,7 +99,7 @@ export class Card extends EventTarget {
 
 	setConfig() {
 		this.config.init = "init" in this.config ? this.config.init : true;
-		this.iinLookup = new PaymentsUtils.IINLookup(this.config);
+		this.iinLookup = new IinLookup(this.config);
 		if ("listeners" in this.config) {
 			const listeners = this.config.listeners;
 			for (let eventType in listeners) {
