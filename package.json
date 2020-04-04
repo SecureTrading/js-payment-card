@@ -45,7 +45,7 @@
     "file-loader": "^6.0.0",
     "html-loader": "^1.1.0",
     "http-server": "^0.12.1",
-    "jest": "^25.2.3",
+    "jest": "^25.2.7",
     "jest-cli": "^25.2.7",
     "jest-each": "^25.2.6",
     "jsdom": "^16.2.2",
