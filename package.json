@@ -50,7 +50,7 @@
     "jest-each": "^25.4.0",
     "jsdom": "^16.2.2",
     "selenium-webdriver": "^4.0.0-alpha.7",
-    "snyk": "^1.311.0",
+    "snyk": "^1.321.0",
     "style-loader": "^1.2.0",
     "stylelint": "^13.3.3",
     "stylelint-config-standard": "^20.0.0",
