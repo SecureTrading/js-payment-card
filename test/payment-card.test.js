@@ -234,11 +234,11 @@ each([[{animationName: "unknown"}, 0, 0],
 	       pc.cancelAutofill = jest.fn();
 	       pc.template = realTemplate;
 	       pc.createCard();
-	       pc.onAutofill(e)
+	       pc.onAutofill(e);
 	       setTimeout(function(){
 		   expect(pc.autofillExpiry).toHaveBeenCalledTimes(expAutofill);
 		   expect(pc.cancelAutofill).toHaveBeenCalledTimes(expCancelAutofill);
-	       }, 80); // Have to wait for after the autofillExpiry might have been called
+	       }, 100); // Have to wait for after the autofillExpiry might have been called
 
 	   });
 
