@@ -29,7 +29,7 @@
   },
   "homepage": "https://github.com/SecureTrading/js-payment-card#readme",
   "dependencies": {
-    "@securetrading/ts-iin-lookup": "^0.0.7"
+    "@securetrading/ts-iin-lookup": "^0.0.8"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
