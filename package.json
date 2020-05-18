@@ -47,7 +47,7 @@
     "http-server": "^0.12.1",
     "jest": "^25.3.0",
     "jest-cli": "^25.4.0",
-    "jest-each": "^25.4.0",
+    "jest-each": "^26.0.1",
     "jsdom": "^16.2.2",
     "selenium-webdriver": "^4.0.0-alpha.7",
     "snyk": "^1.321.0",
