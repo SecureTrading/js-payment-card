@@ -46,7 +46,7 @@
     "html-loader": "^1.1.0",
     "http-server": "^0.12.3",
     "jest": "^26.1.0",
-    "jest-cli": "^26.1.0",
+    "jest-cli": "^26.2.2",
     "jest-each": "^26.2.0",
     "jsdom": "^16.3.0",
     "selenium-webdriver": "^4.0.0-alpha.7",
