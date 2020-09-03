@@ -1,3 +1,7 @@
+**Please note a newer version of the Payment card library is available at https://gitlab.com/trustpayments-public/stjs/js-payments-card.**
+
+**This project is no longer actively developed and only recieves dependency updates.**
+
 <h1 align="center">Payment card</h1>
 
 <div align="center">
