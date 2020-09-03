@@ -1,9 +1,13 @@
+**Please note a newer version of the Payment card library is available at https://gitlab.com/trustpayments-public/stjs/js-payments-card.**
+
+**This project is no longer actively developed and only recieves dependency updates.**
+
 <h1 align="center">Payment card</h1>
 
 <div align="center">
   
   <!-- Build status -->  
-  [![Build Status](https://travis-ci.org/SecureTrading/js-payment-card.svg?branch=master)](https://travis-ci.org/SecureTrading/js-payment-card) <!-- Test Coverage -->[![Coverage Status](https://coveralls.io/repos/github/SecureTrading/js-payment-card/badge.svg?branch=master)](https://coveralls.io/github/SecureTrading/js-payment-card?branch=master) <!-- Vulnerabilities --> [![Known Vulnerabilities](https://snyk.io/test/github/SecureTrading/js-payment-card/badge.svg?targetFile=package.json)](https://snyk.io/test/github/SecureTrading/js-payment-card?targetFile=package.json) <!-- Dependabot --> [![Dependabot badge](https://img.shields.io/badge/Dependabot-enabled-brightgreen.svg)](https://app.dependabot.com/) <!-- Browser Stack -->[![BrowserStack Status](https://www.browserstack.com/automate/badge.svg?badge_key=M2NubStiRnlBWnZiY2lTR2t1VE5GNXdNcWpEOC9QdUFudHRqa0lWNkNSTT0tLXVWT3MwckNESnAyaXJlajhlZllHUVE9PQ==--5c6859789d9206f6dc34df6062f89d95d0de2564)](https://www.browserstack.com/automate/public-build/M2NubStiRnlBWnZiY2lTR2t1VE5GNXdNcWpEOC9QdUFudHRqa0lWNkNSTT0tLXVWT3MwckNESnAyaXJlajhlZllHUVE9PQ==--5c6859789d9206f6dc34df6062f89d95d0de2564)
+  [![Build Status](https://travis-ci.org/SecureTrading/js-payment-card.svg?branch=master)](https://travis-ci.org/SecureTrading/js-payment-card) <!-- Test Coverage -->[![Coverage Status](https://coveralls.io/repos/github/SecureTrading/js-payment-card/badge.svg?branch=master)](https://coveralls.io/github/SecureTrading/js-payment-card?branch=master) <!-- Vulnerabilities --> [![Known Vulnerabilities](https://snyk.io/test/github/SecureTrading/js-payment-card/badge.svg?targetFile=package.json)](https://snyk.io/test/github/SecureTrading/js-payment-card?targetFile=package.json) <!-- Dependabot --> [![Dependabot badge](https://img.shields.io/badge/Dependabot-enabled-brightgreen.svg)](https://app.dependabot.com/) <!-- Browser Stack -->[![BrowserStack Status](https://automate.browserstack.com/badge.svg?badge_key=ZGFScUZkdVZ1QTNTMDFHTWRLcXV6RFd6dWdWMmFWTVJ1UjNYYVZBUy9vST0tLU11OGVqeHB5TUc0Wk9wVG9aWjNyU1E9PQ==--8911df7d51d6d8a559bec52ef47e213cdee4a18f)](https://automate.browserstack.com/public-build/ZGFScUZkdVZ1QTNTMDFHTWRLcXV6RFd6dWdWMmFWTVJ1UjNYYVZBUy9vST0tLU11OGVqeHB5TUc0Wk9wVG9aWjNyU1E9PQ==--8911df7d51d6d8a559bec52ef47e213cdee4a18f)
 </div>
 
 ## Table of Contents
